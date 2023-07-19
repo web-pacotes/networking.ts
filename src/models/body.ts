@@ -1,4 +1,4 @@
 /**
- * Types a request/response body as a {@link ReadableStream<string>}.
+ * Types a request/response body as a {@link Buffer}.
  */
-export type HttpBody = ReadableStream<string>;
+export type HttpBody = Buffer;
