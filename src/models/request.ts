@@ -17,17 +17,17 @@ type HttpRequestPositionalProperties = Pick<
  * empty or no body with {@link MediaType.binary} type.
  */
 export class HttpRequest {
-	mediaType: MediaType;
+	readonly mediaType: MediaType;
 
-	headers: HttpHeaders;
+	readonly headers: HttpHeaders;
 
-	query: UrlQueryParameters;
+	readonly query: UrlQueryParameters;
 
-	body: HttpBody;
+	readonly body: HttpBody;
 
-	url: URL;
+	readonly url: URL;
 
-	verb: HttpVerb;
+	readonly verb: HttpVerb;
 
 	constructor(
 		url: URL,
@@ -39,7 +39,7 @@ export class HttpRequest {
 		this.headers = headers ?? <HttpHeaders>{};
 		this.query = query ?? <UrlQueryParameters>{};
 		this.mediaType = mediaType ?? MediaType.binary;
-		this.body = body ?? new ReadableStream();
+		this.body = body ?? Buffer.of();
 	}
 
 	/**
