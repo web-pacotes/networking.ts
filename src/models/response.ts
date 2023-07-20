@@ -47,13 +47,13 @@ type JsonHttpResponsePositionalProperties =
 type ImageHttpResponsePositionalProperties =
 	SuccessfulHttpResponsePositionalProperties & {
 		mediaType:
-		| MediaType.jpeg
-		| MediaType.png
-		| MediaType.bmp
-		| MediaType.gif
-		| MediaType.svg
-		| MediaType.tiff
-		| MediaType.webp;
+			| MediaType.jpeg
+			| MediaType.png
+			| MediaType.bmp
+			| MediaType.gif
+			| MediaType.svg
+			| MediaType.tiff
+			| MediaType.webp;
 	};
 
 type PlainTextHttpResponsePositionalProperties =
@@ -124,9 +124,11 @@ export abstract class HttpResponse {
 	}
 
 	toString(): string {
-		return `${this.constructor.name}(Status Code: ${this.statusCode
-			} | Headers: ${this.headers} | Body: ${this.stringify ? this.body.toString('utf8') : '...'
-			})`;
+		return `${this.constructor.name}(Status Code: ${
+			this.statusCode
+		} | Headers: ${this.headers} | Body: ${
+			this.stringify ? this.body.toString('utf8') : '...'
+		})`;
 	}
 }
 
