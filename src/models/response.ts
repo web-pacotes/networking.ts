@@ -1,5 +1,6 @@
 import { Range } from '../type-utils';
 import { HttpBody } from './body';
+import { HttpError } from './errors';
 import { HttpHeaders } from './headers';
 import { MediaType } from './media_type';
 
@@ -17,41 +18,49 @@ type InformationalHttpResponsePositionalProperties = Omit<
 	HttpResponsePositionalProperties,
 	'stringify' | 'body'
 > & { statusCode: Range<100, 200> };
+
 type SuccessfulHttpResponsePositionalProperties = Omit<
 	HttpResponsePositionalProperties,
 	'stringify'
 > & { statusCode: Range<200, 300>; stringify?: boolean };
+
 type RedirectionHttpResponsePositionalProperties = Omit<
 	HttpResponsePositionalProperties,
 	'stringify' | 'body'
 > & { statusCode: Range<300, 400>; location: URL };
+
 type ClientErrorHttpResponsePositionalProperties = Omit<
 	HttpResponsePositionalProperties,
 	'stringify'
 > & { statusCode: Range<400, 500>; stringify?: boolean };
+
 type ServerErrorHttpResponsePositionalProperties = Omit<
 	HttpResponsePositionalProperties,
 	'stringify'
 > & { statusCode: Range<500, 600>; stringify?: boolean };
+
 type JsonHttpResponsePositionalProperties =
 	SuccessfulHttpResponsePositionalProperties & {
 		mediaType: MediaType.json | MediaType.jsonld;
 	};
+
 type ImageHttpResponsePositionalProperties =
 	SuccessfulHttpResponsePositionalProperties & {
 		mediaType:
-			| MediaType.jpeg
-			| MediaType.png
-			| MediaType.bmp
-			| MediaType.gif
-			| MediaType.svg
-			| MediaType.tiff
-			| MediaType.webp;
+		| MediaType.jpeg
+		| MediaType.png
+		| MediaType.bmp
+		| MediaType.gif
+		| MediaType.svg
+		| MediaType.tiff
+		| MediaType.webp;
 	};
+
 type PlainTextHttpResponsePositionalProperties =
 	SuccessfulHttpResponsePositionalProperties & {
 		mediaType: MediaType.plainText;
 	};
+
 type BinaryTextHttpResponsePositionalProperties =
 	SuccessfulHttpResponsePositionalProperties & { mediaType: MediaType.binary };
 
@@ -115,11 +124,9 @@ export abstract class HttpResponse {
 	}
 
 	toString(): string {
-		return `${this.constructor.name}(Status Code: ${
-			this.statusCode
-		} | Headers: ${this.headers} | Body: ${
-			this.stringify ? this.body.toString('utf8') : '...'
-		})`;
+		return `${this.constructor.name}(Status Code: ${this.statusCode
+			} | Headers: ${this.headers} | Body: ${this.stringify ? this.body.toString('utf8') : '...'
+			})`;
 	}
 }
 
@@ -206,6 +213,10 @@ export class ClientErrorHttpResponse extends HttpResponse {
 			stringify: stringify ?? true
 		});
 	}
+
+	toHttpError(): HttpError {
+		return new HttpError({ statusCode: this.statusCode as Range<400, 500> });
+	}
 }
 
 /**
@@ -226,6 +237,10 @@ export class ServerErrorHttpResponse extends HttpResponse {
 			statusCode: statusCode,
 			stringify: stringify ?? true
 		});
+	}
+
+	toHttpError(): HttpError {
+		return new HttpError({ statusCode: this.statusCode as Range<500, 600> });
 	}
 }
 
