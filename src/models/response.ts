@@ -47,13 +47,13 @@ type JsonHttpResponsePositionalProperties =
 type ImageHttpResponsePositionalProperties =
 	SuccessfulHttpResponsePositionalProperties & {
 		mediaType:
-		| MediaType.jpeg
-		| MediaType.png
-		| MediaType.bmp
-		| MediaType.gif
-		| MediaType.svg
-		| MediaType.tiff
-		| MediaType.webp;
+			| MediaType.jpeg
+			| MediaType.png
+			| MediaType.bmp
+			| MediaType.gif
+			| MediaType.svg
+			| MediaType.tiff
+			| MediaType.webp;
 	};
 
 type PlainTextHttpResponsePositionalProperties =
@@ -81,7 +81,7 @@ export abstract class HttpResponse {
 
 	/**
 	 * Converts a fetch {@link Response} in a {@link HttpResponse}.
-	 * 
+	 *
 	 * @param response - a response that follows the Fetch API response schema.
 	 * @returns a {@link HttpResponse} instance that translates the fetch response.
 	 */
@@ -142,9 +142,11 @@ export abstract class HttpResponse {
 	}
 
 	toString(): string {
-		return `${this.constructor.name}(Status Code: ${this.statusCode
-			} | Headers: ${this.headers} | Body: ${this.stringify ? this.body.get() : '...'
-			})`;
+		return `${this.constructor.name}(Status Code: ${
+			this.statusCode
+		} | Headers: ${this.headers} | Body: ${
+			this.stringify ? this.body.get() : '...'
+		})`;
 	}
 }
 
@@ -152,14 +154,17 @@ export abstract class HttpResponse {
  * Types an HTTP response that is classified as a informational response (status code: **100**-**199**).
  */
 export class InformationalHttpResponse extends HttpResponse {
-
-	static tryParseFetchResponse(response: Response): Option<InformationalHttpResponse> {
+	static tryParseFetchResponse(
+		response: Response
+	): Option<InformationalHttpResponse> {
 		if (response.status >= 200) {
 			return;
 		}
 
 		return new InformationalHttpResponse({
-			...extractEssential(response) as InformationalHttpResponsePositionalProperties
+			...(extractEssential(
+				response
+			) as InformationalHttpResponsePositionalProperties)
 		});
 	}
 
@@ -182,8 +187,9 @@ export class InformationalHttpResponse extends HttpResponse {
  * Types an HTTP response that is classified as a successful response (status code: **200**-**299**).
  */
 export class SuccessfulHttpResponse extends HttpResponse {
-
-	static tryParseFetchResponse(response: Response): Option<SuccessfulHttpResponse> {
+	static tryParseFetchResponse(
+		response: Response
+	): Option<SuccessfulHttpResponse> {
 		if (response.status >= 300) {
 			return;
 		}
@@ -195,8 +201,10 @@ export class SuccessfulHttpResponse extends HttpResponse {
 		}
 
 		return new SuccessfulHttpResponse({
-			...extractEssential(response) as SuccessfulHttpResponsePositionalProperties,
-			body: of(() => response.text()),
+			...(extractEssential(
+				response
+			) as SuccessfulHttpResponsePositionalProperties),
+			body: of(() => response.text())
 		});
 	}
 
@@ -253,7 +261,9 @@ export class SuccessfulHttpResponse extends HttpResponse {
 export class RedirectionHttpResponse extends HttpResponse {
 	readonly location: URL;
 
-	static tryParseFetchResponse(response: Response): Option<RedirectionHttpResponse> {
+	static tryParseFetchResponse(
+		response: Response
+	): Option<RedirectionHttpResponse> {
 		if (response.status >= 400) {
 			return;
 		}
@@ -261,8 +271,8 @@ export class RedirectionHttpResponse extends HttpResponse {
 		const essential = extractEssential(response);
 
 		return new RedirectionHttpResponse({
-			...essential as RedirectionHttpResponsePositionalProperties,
-			location: new URL(essential.headers['location']),
+			...(essential as RedirectionHttpResponsePositionalProperties),
+			location: new URL(essential.headers['location'])
 		});
 	}
 
@@ -288,15 +298,18 @@ export class RedirectionHttpResponse extends HttpResponse {
  * Types an HTTP response that is classified as a client error response (status code: **400**-**499**).
  */
 export class ClientErrorHttpResponse extends HttpResponse {
-
-	static tryParseFetchResponse(response: Response): Option<ClientErrorHttpResponse> {
+	static tryParseFetchResponse(
+		response: Response
+	): Option<ClientErrorHttpResponse> {
 		if (response.status >= 500) {
 			return;
 		}
 
 		return new ClientErrorHttpResponse({
-			...extractEssential(response) as ClientErrorHttpResponsePositionalProperties,
-			body: of(() => response.json()),
+			...(extractEssential(
+				response
+			) as ClientErrorHttpResponsePositionalProperties),
+			body: of(() => response.json())
 		});
 	}
 
@@ -325,11 +338,12 @@ export class ClientErrorHttpResponse extends HttpResponse {
  * Types an HTTP response that is classified as a server error response (status code: **500**-**599**).
  */
 export class ServerErrorHttpResponse extends HttpResponse {
-
 	static tryParseFetchResponse(response: Response): ServerErrorHttpResponse {
 		return new ServerErrorHttpResponse({
-			...extractEssential(response) as ServerErrorHttpResponsePositionalProperties,
-			body: of(() => response.json()),
+			...(extractEssential(
+				response
+			) as ServerErrorHttpResponsePositionalProperties),
+			body: of(() => response.json())
 		});
 	}
 
@@ -432,7 +446,13 @@ export class BinaryHttpResponse extends SuccessfulHttpResponse {
 	}
 }
 
-const responseTypesByPriority = [InformationalHttpResponse, SuccessfulHttpResponse, RedirectionHttpResponse, ClientErrorHttpResponse, ServerErrorHttpResponse];
+const responseTypesByPriority = [
+	InformationalHttpResponse,
+	SuccessfulHttpResponse,
+	RedirectionHttpResponse,
+	ClientErrorHttpResponse,
+	ServerErrorHttpResponse
+];
 
 function extractEssential(response: Response) {
 	const headers = Object.fromEntries(response.headers);
@@ -440,7 +460,6 @@ function extractEssential(response: Response) {
 	return {
 		statusCode: response.status,
 		headers: headers as HttpHeaders,
-		mediaType: tryParseContentType(headers['content-type']),
+		mediaType: tryParseContentType(headers['content-type'])
 	};
 }
-

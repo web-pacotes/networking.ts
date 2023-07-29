@@ -7,10 +7,8 @@ import { UrlQueryParameters } from './params';
 /**
  * An alias for {@link HttpRequest} positional parameters.
  */
-type HttpRequestPositionalProperties = Pick<
-	HttpRequest,
-	'url' | 'verb'
-> & Pick<Partial<HttpRequest>, 'body' | 'headers' | 'mediaType' | 'query'>;
+type HttpRequestPositionalProperties = Pick<HttpRequest, 'url' | 'verb'> &
+	Pick<Partial<HttpRequest>, 'body' | 'headers' | 'mediaType' | 'query'>;
 
 /**
  * Types an HTTP request. Only the url and verb fields are required, if others are not provided it defaults to a request with
@@ -29,9 +27,14 @@ export class HttpRequest {
 
 	readonly verb: HttpVerb;
 
-	constructor(
-		{ url, verb, headers, query, mediaType, body }: HttpRequestPositionalProperties
-	) {
+	constructor({
+		url,
+		verb,
+		headers,
+		query,
+		mediaType,
+		body
+	}: HttpRequestPositionalProperties) {
 		this.url = url;
 		this.verb = verb;
 		this.headers = headers ?? <HttpHeaders>{};
@@ -92,7 +95,7 @@ export class HttpRequest {
 		const init = <RequestInit>{
 			body: convert(this.body),
 			method: this.verb,
-			headers: this.headers,
+			headers: this.headers
 		};
 
 		let url = this.url;
