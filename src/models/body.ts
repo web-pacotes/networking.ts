@@ -25,7 +25,7 @@ export function empty(): HttpBody {
 
 /**
  * Provides a type guard that validates if a body is empty.
- * 
+ *
  * @param body - the body in validation
  * @returns true if the body is empty, false if not
  */

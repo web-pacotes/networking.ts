@@ -190,12 +190,11 @@ export class NetworkingClient {
 		let result: Either<HttpRequestError, HttpResponse>;
 
 		try {
-			const fetchRequest = {
-				...request.toFetchRequest(),
-				signal: AbortSignal.timeout(this.timeoutMS)
-			};
+			const fetchRequest = request.toFetchRequest();
 
-			const fetchResponse = await this.fetchClient(fetchRequest);
+			const fetchResponse = await this.fetchClient(fetchRequest, {
+				signal: AbortSignal.timeout(this.timeoutMS)
+			});
 
 			result = HttpResponse.fromFetchResponse(fetchResponse);
 		} catch (err) {
@@ -209,7 +208,7 @@ export class NetworkingClient {
 					timeoutMS: this.timeoutMS
 				});
 			} else {
-				result = new UnknownError({ cause: err.message });
+				result = new UnknownError({ cause: err.stack });
 			}
 		}
 
