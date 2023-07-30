@@ -1,7 +1,7 @@
 import { HttpHeaders } from './headers';
 import { MediaType } from './media_type';
 import { HttpVerb } from './verb';
-import { HttpBody, convert, empty } from './body';
+import { HttpBody, convert, empty, isEmpty } from './body';
 import { UrlQueryParameters } from './params';
 
 /**
@@ -93,7 +93,7 @@ export class HttpRequest {
 	 */
 	toFetchRequest(): Request {
 		const init = <RequestInit>{
-			body: convert(this.body),
+			body: isEmpty(this.body) ? undefined : convert(this.body),
 			method: this.verb,
 			headers: this.headers
 		};

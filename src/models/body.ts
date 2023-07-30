@@ -6,6 +6,9 @@ type JSON = NonNullable<object>;
 type JSONArray = Array<NonNullable<JSON | number | string | boolean>>;
 type Anything<T = object | Binary | JSON | JSONArray | Text | undefined> = T;
 
+// Declare global empty async lazy instance so it's possible to check if a body is empty
+const emptyAsyncLazy = AsyncLazy.async(() => Promise.resolve(undefined));
+
 /**
  * Types a request/response body as a {@link Buffer}.
  */
@@ -17,7 +20,17 @@ export type HttpBody<T = Anything> = AsyncLazy<T>;
  * @returns a lazy {@link HttpBody} that resolves an empty promise.
  */
 export function empty(): HttpBody {
-	return AsyncLazy.async(() => Promise.resolve(undefined));
+	return emptyAsyncLazy;
+}
+
+/**
+ * Provides a type guard that validates if a body is empty.
+ * 
+ * @param body - the body in validation
+ * @returns true if the body is empty, false if not
+ */
+export function isEmpty(body: HttpBody): body is HttpBody<undefined> {
+	return body === emptyAsyncLazy;
 }
 
 /**
@@ -50,25 +63,3 @@ export function convert<T = Anything>(body: HttpBody<T>): ReadableStream<T> {
 		}
 	});
 }
-
-// export function fromReadableStream(stream: ReadableStream<Uint8Array>): HttpBody {
-//     return AsyncLazy.async(
-//         async function () {
-//             const reader = stream.getReader();
-//             const chunks = new Array<Uint8Array>();
-
-//             for (; ;) {
-//                 const { value, done } = await reader.read();
-
-//                 if (value) {
-//                     chunks.push(value);
-//                 }
-
-//                 if (done) {
-//                     break;
-//                 }
-//             }
-
-//             return Buffer.concat(chunks);
-//         });
-// }
