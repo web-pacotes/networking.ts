@@ -61,7 +61,7 @@ type PlainTextHttpResponsePositionalProperties =
 		mediaType: MediaType.plainText;
 	};
 
-type BinaryTextHttpResponsePositionalProperties =
+type BinaryHttpResponsePositionalProperties =
 	SuccessfulHttpResponsePositionalProperties & { mediaType: MediaType.binary };
 
 /**
@@ -194,16 +194,33 @@ export class SuccessfulHttpResponse extends HttpResponse {
 			return;
 		}
 
-		const responseType = this.typeOf(MediaType.avif);
+		const essential = extractEssential(response);
+		const responseType = this.typeOf(essential.mediaType);
 
-		if (!(responseType instanceof SuccessfulHttpResponse)) {
-			return responseType.tryParseFetchResponse(response);
-		}
+		return responseType.parseFetchResponse(
+			response,
+			essential as Pick<
+				SuccessfulHttpResponsePositionalProperties,
+				'statusCode' | 'headers' | 'mediaType'
+			>
+		);
+	}
 
+	static parseFetchResponse(
+		response: Response,
+		{
+			headers,
+			statusCode,
+			mediaType
+		}: Pick<
+			SuccessfulHttpResponsePositionalProperties,
+			'statusCode' | 'headers' | 'mediaType'
+		>
+	): SuccessfulHttpResponse {
 		return new SuccessfulHttpResponse({
-			...(extractEssential(
-				response
-			) as SuccessfulHttpResponsePositionalProperties),
+			headers: headers,
+			statusCode: statusCode,
+			mediaType: mediaType,
 			body: of(() => response.text())
 		});
 	}
@@ -309,7 +326,7 @@ export class ClientErrorHttpResponse extends HttpResponse {
 			...(extractEssential(
 				response
 			) as ClientErrorHttpResponsePositionalProperties),
-			body: of(() => response.json())
+			body: extractBody(response)
 		});
 	}
 
@@ -343,7 +360,7 @@ export class ServerErrorHttpResponse extends HttpResponse {
 			...(extractEssential(
 				response
 			) as ServerErrorHttpResponsePositionalProperties),
-			body: of(() => response.json())
+			body: extractBody(response)
 		});
 	}
 
@@ -372,6 +389,25 @@ export class ServerErrorHttpResponse extends HttpResponse {
  * Types a successful HTTP response which media type is {@link MediaType.json} or {@link MediaType.jsonld}.
  */
 export class JsonHttpResponse extends SuccessfulHttpResponse {
+	static parseFetchResponse(
+		response: Response,
+		{
+			headers,
+			statusCode,
+			mediaType
+		}: Pick<
+			JsonHttpResponsePositionalProperties,
+			'statusCode' | 'headers' | 'mediaType'
+		>
+	): JsonHttpResponse {
+		return new JsonHttpResponse({
+			headers: headers,
+			mediaType: mediaType,
+			statusCode: statusCode,
+			body: of(() => response.json())
+		});
+	}
+
 	constructor({
 		body,
 		headers,
@@ -391,6 +427,25 @@ export class JsonHttpResponse extends SuccessfulHttpResponse {
  * Types a successful HTTP response which media type starts with `image/...`
  */
 export class ImageHttpResponse extends SuccessfulHttpResponse {
+	static parseFetchResponse(
+		response: Response,
+		{
+			headers,
+			statusCode,
+			mediaType
+		}: Pick<
+			ImageHttpResponsePositionalProperties,
+			'statusCode' | 'headers' | 'mediaType'
+		>
+	): ImageHttpResponse {
+		return new ImageHttpResponse({
+			headers: headers,
+			mediaType: mediaType,
+			statusCode: statusCode,
+			body: of(() => response.blob())
+		});
+	}
+
 	constructor({
 		body,
 		headers,
@@ -411,6 +466,25 @@ export class ImageHttpResponse extends SuccessfulHttpResponse {
  * Types an successful HTTP response which media type is {@link MediaType.plainText}.
  */
 export class PlainTextHttpResponse extends SuccessfulHttpResponse {
+	static parseFetchResponse(
+		response: Response,
+		{
+			headers,
+			statusCode,
+			mediaType
+		}: Pick<
+			PlainTextHttpResponsePositionalProperties,
+			'statusCode' | 'headers' | 'mediaType'
+		>
+	): PlainTextHttpResponse {
+		return new PlainTextHttpResponse({
+			headers: headers,
+			mediaType: mediaType,
+			statusCode: statusCode,
+			body: of(() => response.text())
+		});
+	}
+
 	constructor({
 		body,
 		headers,
@@ -430,12 +504,31 @@ export class PlainTextHttpResponse extends SuccessfulHttpResponse {
  * Types an successful HTTP response which media type is {@link MediaType.binary}.
  */
 export class BinaryHttpResponse extends SuccessfulHttpResponse {
+	static parseFetchResponse(
+		response: Response,
+		{
+			headers,
+			statusCode,
+			mediaType
+		}: Pick<
+			BinaryHttpResponsePositionalProperties,
+			'statusCode' | 'headers' | 'mediaType'
+		>
+	): BinaryHttpResponse {
+		return new BinaryHttpResponse({
+			headers: headers,
+			mediaType: mediaType,
+			statusCode: statusCode,
+			body: of(() => response.blob())
+		});
+	}
+
 	constructor({
 		body,
 		headers,
 		mediaType,
 		statusCode
-	}: BinaryTextHttpResponsePositionalProperties) {
+	}: BinaryHttpResponsePositionalProperties) {
 		super({
 			body: body,
 			headers: headers,
@@ -462,4 +555,22 @@ function extractEssential(response: Response) {
 		headers: headers as HttpHeaders,
 		mediaType: tryParseContentType(headers['content-type'])
 	};
+}
+
+function extractBody(response: Response) {
+	const contentType = Object.fromEntries(response.headers)['content-type'];
+	const mediaType = tryParseContentType(contentType);
+
+	const successType = SuccessfulHttpResponse.typeOf(mediaType);
+
+	switch (successType) {
+		case ImageHttpResponse:
+		case BinaryHttpResponse:
+			return of(() => response.blob());
+		case JsonHttpResponse:
+			return of(() => response.json());
+		case PlainTextHttpResponse:
+		default:
+			return of(() => response.text());
+	}
 }
