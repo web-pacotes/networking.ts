@@ -1,18 +1,17 @@
-import { AsyncLazy } from '../type-utils';
+import { Lazy } from '../type-utils';
 
 type Text = string;
 type Binary = Blob;
 type JSON = NonNullable<object>;
 type JSONArray = Array<NonNullable<JSON | number | string | boolean>>;
-type Anything<T = object | Binary | JSON | JSONArray | Text | undefined> = T;
+type Anything<T = object | Binary | JSON | JSONArray | Text | null> = T;
+type FetchBody = XMLHttpRequestBodyInit | null;
 
-// Declare global empty async lazy instance so it's possible to check if a body is empty
-const emptyAsyncLazy = AsyncLazy.async(() => Promise.resolve(undefined));
 
 /**
- * Types a request/response body as a {@link Buffer}.
+ * Types a request/response body as a {Buffer@link Lazy<Anything>}.
  */
-export type HttpBody<T = Anything> = AsyncLazy<T>;
+export type HttpBody<T = Anything> = Lazy<T>;
 
 /**
  * Creates a {@link HttpBody} that resolves an empty(undefined) value.
@@ -20,46 +19,38 @@ export type HttpBody<T = Anything> = AsyncLazy<T>;
  * @returns a lazy {@link HttpBody} that resolves an empty promise.
  */
 export function empty(): HttpBody {
-	return emptyAsyncLazy;
+	return of(() => Promise.resolve(null));
 }
 
-/**
- * Provides a type guard that validates if a body is empty.
- *
- * @param body - the body in validation
- * @returns true if the body is empty, false if not
- */
-export function isEmpty(body: HttpBody): body is HttpBody<undefined> {
-	return body === emptyAsyncLazy;
-}
 
 /**
  * Creates a {@link HttpBody} in a lazy manner.
  *
  * @returns a lazy {@link HttpBody} that does not resolve until computed.
  */
-export function of<T = Anything>(value: () => Promise<T>): HttpBody<T> {
-	return AsyncLazy.async(value);
+export function of<T = Anything>(value: () => T): HttpBody<T> {
+	return Lazy.sync(value);
 }
 
 /**
- * Converts a {@link HttpBody} in a {@link ReadableStream}, by pulling data from the computed body value.
+ * Converts a {@link HttpBody} in a {@link FetchBody}.
  *
  * @param body - the body to convert
- * @returns a {@link ReadableStream} which pulls data by computing lazy body value.
+ * @returns a type of {@link FetchBody} that translates {@link HttpBody}.
  */
-export function convert<T = Anything>(body: HttpBody<T>): ReadableStream<T> {
-	return new ReadableStream({
-		async start(controller) {
-			try {
-				const computed = await body.get();
+export function convert<T = Anything>(body: HttpBody<T>): FetchBody {
+	const data = body.get();
 
-				controller.enqueue(computed);
-			} catch (error) {
-				controller.error(error);
-			}
+	if (!data) {
+		return null;
+	} else if (isJSON(data)) {
+		return JSON.stringify(data);
+	} else {
+		return data;
+	}
+}
 
-			controller.close();
-		}
-	});
+
+function isJSON(data: Anything): data is JSON {
+	return typeof data === 'object';
 }
