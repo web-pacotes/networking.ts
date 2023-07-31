@@ -1,8 +1,9 @@
 import { HttpHeaders } from './headers';
 import { MediaType } from './media_type';
 import { HttpVerb } from './verb';
-import { HttpBody, convert, empty, isEmpty } from './body';
+import { HttpBody, convert, empty } from './body';
 import { UrlQueryParameters } from './params';
+import { resolveUrl } from './url';
 
 /**
  * An alias for {@link HttpRequest} positional parameters.
@@ -93,15 +94,18 @@ export class HttpRequest {
 	 */
 	toFetchRequest(): Request {
 		const init = <RequestInit>{
-			body: isEmpty(this.body) ? undefined : convert(this.body),
+			body: convert(this.body),
 			method: this.verb,
-			headers: this.headers
+			headers: {
+				...this.headers,
+				'content-type': this.mediaType,
+			},
 		};
 
 		let url = this.url;
 
 		if (Object.keys(this.query).length > 0) {
-			url = new URL(`${this.url}?${new URLSearchParams(this.query)}`);
+			url = resolveUrl(this.url, '', this.query);
 		}
 
 		return new Request(url, init);
