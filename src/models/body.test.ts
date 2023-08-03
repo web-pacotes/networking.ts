@@ -47,7 +47,7 @@ describe('body', function () {
 			const body = of(() => data);
 
 			const result = convert(body);
-			const expected = data
+			const expected = data;
 
 			expect(result).toBe(expected);
 		});
@@ -57,7 +57,7 @@ describe('body', function () {
 			const body = of(() => data);
 
 			const result = convert(body);
-			const expected = data
+			const expected = data;
 
 			expect(result).toBe(expected);
 		});

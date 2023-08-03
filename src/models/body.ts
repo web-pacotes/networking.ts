@@ -7,7 +7,6 @@ type JSONArray = Array<NonNullable<JSON | number | string | boolean>>;
 type Anything<T = object | Binary | JSON | JSONArray | Text | null> = T;
 type FetchBody = XMLHttpRequestBodyInit | null;
 
-
 /**
  * Types a request/response body as a {Buffer@link Lazy<Anything>}.
  */
@@ -21,7 +20,6 @@ export type HttpBody<T = Anything> = Lazy<T>;
 export function empty(): HttpBody {
 	return of(() => null);
 }
-
 
 /**
  * Creates a {@link HttpBody} in a lazy manner.
@@ -49,7 +47,6 @@ export function convert<T = Anything>(body: HttpBody<T>): FetchBody {
 		return JSON.stringify(data);
 	}
 }
-
 
 function isBinary(data: Anything): data is Blob {
 	return data instanceof Blob;

@@ -7,7 +7,7 @@ describe('request', function () {
 		test('sets fetch request body null if request body is empty', function () {
 			const request = new HttpRequest({
 				url: new URL('https://github.com/web-pacote/networking'),
-				verb: 'get',
+				verb: 'get'
 			});
 
 			const fetchRequest = request.toFetchRequest();
@@ -32,7 +32,7 @@ describe('request', function () {
 				url: new URL('https://github.com/web-pacote/networking'),
 				verb: 'post',
 				body: of(() => 'hello world!'),
-				query: { 'foo': 'bar' },
+				query: { foo: 'bar' }
 			});
 
 			const fetchRequest = request.toFetchRequest();

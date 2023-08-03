@@ -98,8 +98,8 @@ export class HttpRequest {
 			method: this.verb,
 			headers: {
 				...this.headers,
-				'content-type': this.mediaType,
-			},
+				'content-type': this.mediaType
+			}
 		};
 
 		let url = this.url;
