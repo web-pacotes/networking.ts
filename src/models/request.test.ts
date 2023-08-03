@@ -26,5 +26,18 @@ describe('request', function () {
 
 			expect(fetchRequest.body).toBeInstanceOf(ReadableStream<Uint8Array>);
 		});
+
+		test('includes query parameters if not empty', function () {
+			const request = new HttpRequest({
+				url: new URL('https://github.com/web-pacote/networking'),
+				verb: 'post',
+				body: of(() => 'hello world!'),
+				query: { 'foo': 'bar' },
+			});
+
+			const fetchRequest = request.toFetchRequest();
+
+			expect(fetchRequest.url).toContain('foo=bar');
+		});
 	});
 });
