@@ -1,3 +1,4 @@
+import { Interceptor } from '../interceptors';
 import {
 	HttpBody,
 	HttpHeaders,
@@ -12,7 +13,7 @@ import {
 	resolveUrl
 } from '../models';
 import { FetchClient } from '../models/fetch';
-import { Either } from '../type-utils';
+import { Either, fold, left, right } from '../type-utils';
 
 /**
  * An alias for {@link NetworkingClient} positional parameters.
@@ -21,6 +22,7 @@ export type NetworkingClientPositionalParameters = {
 	baseUrl: URL;
 	fetchClient?: FetchClient;
 	timeoutMS?: number;
+	interceptors?: Interceptor[];
 };
 
 /**
@@ -67,14 +69,18 @@ export class NetworkingClient {
 
 	readonly timeoutMS: number;
 
+	readonly interceptors: Interceptor[];
+
 	constructor({
 		baseUrl,
 		fetchClient,
-		timeoutMS
+		timeoutMS,
+		interceptors,
 	}: NetworkingClientPositionalParameters) {
 		this.baseUrl = baseUrl;
 		this.fetchClient = fetchClient ?? fetch;
 		this.timeoutMS = timeoutMS ?? defaultRequestsTimeoutMS;
+		this.interceptors = interceptors ?? [];
 	}
 
 	get({
@@ -192,27 +198,31 @@ export class NetworkingClient {
 		let result: Either<HttpRequestError, HttpResponse>;
 
 		try {
-			const fetchRequest = request.toFetchRequest();
+			const mergeRequest = request.merge(this.interceptors.map((x) => x.onRequest(request)));
+
+			const fetchRequest = mergeRequest.toFetchRequest();
 
 			const fetchResponse = await this.fetchClient(fetchRequest, {
 				signal: AbortSignal.timeout(this.timeoutMS)
 			});
 
-			result = HttpResponse.fromFetchResponse(fetchResponse);
+			result = right(HttpResponse.fromFetchResponse(fetchResponse));
 		} catch (err) {
 			if (err === undefined) {
-				result = new NoInternetConnectionError();
+				result = left(new NoInternetConnectionError());
 			} else if (!(err instanceof Error)) {
-				result = new UnknownError({ cause: `${err}` });
+				result = left(new UnknownError({ cause: `${err}` }));
 			} else if (err.name === 'TimeoutError') {
-				result = new TimeoutError({
+				result = left(new TimeoutError({
 					cause: err.message,
 					timeoutMS: this.timeoutMS
-				});
+				}));
 			} else {
-				result = new UnknownError({ cause: JSON.stringify(err) });
+				result = left(new UnknownError({ cause: JSON.stringify(err) }));
 			}
 		}
+
+		fold(result, (l) => this.interceptors.forEach((x) => x.onError(l)), (r) => this.interceptors.forEach((x) => x.onResponse(r)));
 
 		return result;
 	}
