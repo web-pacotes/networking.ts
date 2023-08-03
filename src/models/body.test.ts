@@ -8,7 +8,7 @@ describe('body', function () {
 
 			const computed = body.get();
 
-			expect(computed).resolves.toBe(null);
+			expect(computed).toBe(null);
 		});
 	});
 

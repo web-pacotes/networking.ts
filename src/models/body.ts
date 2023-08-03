@@ -14,12 +14,12 @@ type FetchBody = XMLHttpRequestBodyInit | null;
 export type HttpBody<T = Anything> = Lazy<T>;
 
 /**
- * Creates a {@link HttpBody} that resolves an empty(undefined) value.
+ * Creates a {@link HttpBody} that resolves an empty(null) value.
  *
- * @returns a lazy {@link HttpBody} that resolves an empty promise.
+ * @returns a lazy {@link HttpBody} that resolves a null value.
  */
 export function empty(): HttpBody {
-	return of(() => Promise.resolve(null));
+	return of(() => null);
 }
 
 
