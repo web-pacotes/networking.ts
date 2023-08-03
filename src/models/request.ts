@@ -1,16 +1,15 @@
 import { HttpHeaders } from './headers';
 import { MediaType } from './media_type';
 import { HttpVerb } from './verb';
-import { HttpBody } from './body';
+import { HttpBody, convert, empty } from './body';
 import { UrlQueryParameters } from './params';
+import { resolveUrl } from './url';
 
 /**
  * An alias for {@link HttpRequest} positional parameters.
  */
-type HttpRequestPositionalProperties = Pick<
-	Partial<HttpRequest>,
-	'headers' | 'query' | 'mediaType' | 'body'
->;
+type HttpRequestPositionalProperties = Pick<HttpRequest, 'url' | 'verb'> &
+	Pick<Partial<HttpRequest>, 'body' | 'headers' | 'mediaType' | 'query'>;
 
 /**
  * Types an HTTP request. Only the url and verb fields are required, if others are not provided it defaults to a request with
@@ -29,17 +28,20 @@ export class HttpRequest {
 
 	readonly verb: HttpVerb;
 
-	constructor(
-		url: URL,
-		verb: HttpVerb,
-		{ headers, query, mediaType, body }: HttpRequestPositionalProperties = {}
-	) {
+	constructor({
+		url,
+		verb,
+		headers,
+		query,
+		mediaType,
+		body
+	}: HttpRequestPositionalProperties) {
 		this.url = url;
 		this.verb = verb;
 		this.headers = headers ?? <HttpHeaders>{};
 		this.query = query ?? <UrlQueryParameters>{};
 		this.mediaType = mediaType ?? MediaType.binary;
-		this.body = body ?? Buffer.of();
+		this.body = body ?? empty();
 	}
 
 	/**
@@ -50,8 +52,11 @@ export class HttpRequest {
 	 * @returns a new {@link HttpRequest} instance with new data
 	 */
 	copyWith(value: Partial<HttpRequest>): HttpRequest {
-		return new HttpRequest(value.url ?? this.url, value.verb ?? this.verb, {
+		return new HttpRequest({
+			url: value.url ?? this.url,
+			verb: value.verb ?? this.verb,
 			headers: value.headers ?? this.headers,
+			query: value.query ?? this.query,
 			mediaType: value.mediaType ?? this.mediaType,
 			body: value.body ?? this.body
 		});
@@ -89,15 +94,18 @@ export class HttpRequest {
 	 */
 	toFetchRequest(): Request {
 		const init = <RequestInit>{
-			body: this.body,
+			body: convert(this.body),
 			method: this.verb,
-			headers: this.headers
+			headers: {
+				...this.headers,
+				'content-type': this.mediaType
+			}
 		};
 
 		let url = this.url;
 
 		if (Object.keys(this.query).length > 0) {
-			url = new URL(`${this.url}?${new URLSearchParams(this.query)}`);
+			url = resolveUrl(this.url, '', this.query);
 		}
 
 		return new Request(url, init);

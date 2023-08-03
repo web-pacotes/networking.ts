@@ -3,7 +3,7 @@
 To contribute to this project or build everything locally, start by cloning the repository:
 
 ```bash
-git clone https://github.com/web-pacotes/networking
+git clone https://github.com/web-pacotes/networking.ts
 ```
 
 Afterwards, install the client-side Git hooks to automatically format and lint the project before pushing new commits.

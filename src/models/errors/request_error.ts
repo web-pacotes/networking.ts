@@ -30,7 +30,7 @@ export abstract class HttpRequestError extends Error {
  * Types a {@link HttpRequestError} for when a HTTP request is sent, but couldn't be delivered because there is no internet connection available.
  */
 export class NoInternetConnectionError extends HttpRequestError {
-	constructor({ cause }: NoInternetConnectionErrorPositionalProperties) {
+	constructor({ cause }: NoInternetConnectionErrorPositionalProperties = {}) {
 		super({ cause: cause ?? 'no internet connection available' });
 	}
 }
@@ -59,7 +59,7 @@ export class TimeoutError extends HttpRequestError {
  * Types a {@link HttpRequestError} for when a HTTP request errors in an unknown manner, either before sending it or when attempting to deconstruct the response-
  */
 export class UnknownError extends HttpRequestError {
-	constructor({ cause }: UnknownErrorPositionalProperties) {
+	constructor({ cause }: UnknownErrorPositionalProperties = {}) {
 		super({ cause: cause ?? 'something really weird just happened' });
 	}
 }
