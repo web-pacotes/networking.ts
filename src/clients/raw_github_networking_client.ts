@@ -1,6 +1,5 @@
 import { resolveUrl } from '../models';
-import { FetchClient } from '../models/fetch';
-import { NetworkingClient } from './networking_client';
+import { NetworkingClient, NetworkingClientPositionalParameters } from './networking_client';
 
 /**
  * Types the needed details to consume the resources of a GitHub repo
@@ -27,11 +26,7 @@ type GitHubRepository = {
  */
 type RawGitHubNetworkingClientPositionalProperties = {
 	repository: GitHubRepository;
-
-	fetchClient: FetchClient;
-
-	timeoutMS: number;
-};
+} & Pick<NetworkingClientPositionalParameters, 'fetchClient' | 'timeoutMS'>;
 
 /**
  * A {@link NetworkingClient} that targets RAW GitHub API.
@@ -48,7 +43,7 @@ export class RawGitHubNetworkingClient extends NetworkingClient {
 				`${repository.owner}/${repository.repo}/${repository.ref}/`
 			),
 			fetchClient: fetchClient,
-			timeoutMS: timeoutMS
+			timeoutMS: timeoutMS,
 		});
 	}
 }
