@@ -43,13 +43,17 @@ export function convert<T = Anything>(body: HttpBody<T>): FetchBody {
 
 	if (!data) {
 		return null;
-	} else if (isJSON(data)) {
-		return JSON.stringify(data);
-	} else {
+	} else if (isBinary(data) || !isJSON(data)) {
 		return data;
+	} else {
+		return JSON.stringify(data);
 	}
 }
 
+
+function isBinary(data: Anything): data is Blob {
+	return data instanceof Blob;
+}
 
 function isJSON(data: Anything): data is JSON {
 	return typeof data === 'object';
