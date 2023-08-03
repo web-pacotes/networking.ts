@@ -21,8 +21,8 @@ export type ProxyConfigurationPositionalProperties = Pick<
 >;
 
 /**
- * A {@link NetworkingClient} that proxies HTTP requests at the API level. The proxy 
- * configuration is done via the {@link ProxyConfiguration} type and an example on how it can be configured 
+ * A {@link NetworkingClient} that proxies HTTP requests at the API level. The proxy
+ * configuration is done via the {@link ProxyConfiguration} type and an example on how it can be configured
  * can be seen in {@link RelayProxyNetworkingClient}.
  */
 export class ProxyNetworkingClient extends NetworkingClient {
@@ -44,14 +44,20 @@ export class ProxyNetworkingClient extends NetworkingClient {
 		this.configuration = configuration;
 	}
 
-	send({ request }: { request: HttpRequest; }): Promise<Either<HttpRequestError, HttpResponse>> {
+	send({
+		request
+	}: {
+		request: HttpRequest;
+	}): Promise<Either<HttpRequestError, HttpResponse>> {
 		const proxyRequest = this.configuration.onSend(request);
 
 		return this.configuration.client.send({ request: proxyRequest });
 	}
 }
 
-type OnProxyNetworkingClientSendCallback = (request: HttpRequest) => HttpRequest;
+type OnProxyNetworkingClientSendCallback = (
+	request: HttpRequest
+) => HttpRequest;
 
 /**
  * Types the needed details to configure a proxied request at the API level.
@@ -77,4 +83,4 @@ export class ProxyConfiguration {
 		this.client = client;
 		this.onSend = onSend;
 	}
-};
+}

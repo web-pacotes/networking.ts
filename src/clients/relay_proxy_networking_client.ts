@@ -1,6 +1,9 @@
 import { ProxyNetworkingClient } from './proxy_networking_client';
 import { ProxyNetworkingClientPositionalProperties } from './proxy_networking_client';
-import { ProxyConfiguration, ProxyConfigurationPositionalProperties } from './proxy_networking_client';
+import {
+	ProxyConfiguration,
+	ProxyConfigurationPositionalProperties
+} from './proxy_networking_client';
 
 /**
  * Types the needed properties to configure a client that proxies an HTTP request using Relay Proxy API.
@@ -9,10 +12,11 @@ type RelayProxyNetworkingClientPositionalProperties = {
 	configuration: RelayProxyConfiguration;
 } & ProxyNetworkingClientPositionalProperties;
 
-type RelayProxyConfigurationPositionalProperties = ProxyConfigurationPositionalProperties & {
-	bypassBodyDelete: boolean;
-	bypassExposeHeaders: boolean;
-};
+type RelayProxyConfigurationPositionalProperties =
+	ProxyConfigurationPositionalProperties & {
+		bypassBodyDelete: boolean;
+		bypassExposeHeaders: boolean;
+	};
 
 /**
  * A {@link ProxyNetworkingClient} that proxies HTTP requests using [Relay Proxy API](https://github.com/freitzzz/relay-worker).
@@ -55,10 +59,9 @@ export class RelayProxyConfiguration extends ProxyConfiguration {
 						...request.headers,
 						'x-relay-url': fetchRequest.url,
 						'x-include-body': `${bypassBodyDelete}`,
-						'x-bypass-expose-headers': `${bypassExposeHeaders}`,
-					},
-				}
-				);
+						'x-bypass-expose-headers': `${bypassExposeHeaders}`
+					}
+				});
 			}
 		});
 	}
