@@ -7,11 +7,16 @@ describe('AuthorizationInterceptor', function () {
 		test('applies bearer authorization by default', function () {
 			const parameters = 'mr guys';
 
-			const interceptor = new AuthorizationInterceptor({ parameters: parameters });
-			const request = new HttpRequest({ url: new URL('https://github.com/web-pacotes/networking.ts/'), verb: 'get' });
+			const interceptor = new AuthorizationInterceptor({
+				parameters: parameters
+			});
+			const request = new HttpRequest({
+				url: new URL('https://github.com/web-pacotes/networking.ts/'),
+				verb: 'get'
+			});
 
 			const interceptedRequest = interceptor.onRequest(request);
-			const expectedHeaders = { 'Authorization': `Bearer ${parameters}` };
+			const expectedHeaders = { Authorization: `Bearer ${parameters}` };
 
 			expect(interceptedRequest.headers).toStrictEqual(expectedHeaders);
 		});
@@ -19,14 +24,17 @@ describe('AuthorizationInterceptor', function () {
 		test('overrides existing authorization header', function () {
 			const parameters = 'mr guys';
 
-			const interceptor = new AuthorizationInterceptor({ parameters: parameters });
+			const interceptor = new AuthorizationInterceptor({
+				parameters: parameters
+			});
 			const request = new HttpRequest({
-				url: new URL('https://github.com/web-pacotes/networking.ts/'), verb: 'get',
-				headers: { 'Authorization': 'Bearer kawasaky' },
+				url: new URL('https://github.com/web-pacotes/networking.ts/'),
+				verb: 'get',
+				headers: { Authorization: 'Bearer kawasaky' }
 			});
 
 			const interceptedRequest = interceptor.onRequest(request);
-			const expectedHeaders = { 'Authorization': `Bearer ${parameters}` };
+			const expectedHeaders = { Authorization: `Bearer ${parameters}` };
 
 			expect(interceptedRequest.headers).toStrictEqual(expectedHeaders);
 		});
@@ -34,14 +42,20 @@ describe('AuthorizationInterceptor', function () {
 		test('does not override existing non authorization headers', function () {
 			const parameters = 'mr guys';
 
-			const interceptor = new AuthorizationInterceptor({ parameters: parameters });
+			const interceptor = new AuthorizationInterceptor({
+				parameters: parameters
+			});
 			const request = new HttpRequest({
-				url: new URL('https://github.com/web-pacotes/networking.ts/'), verb: 'get',
-				headers: { 'User-Agent': 'node' },
+				url: new URL('https://github.com/web-pacotes/networking.ts/'),
+				verb: 'get',
+				headers: { 'User-Agent': 'node' }
 			});
 
 			const interceptedRequest = interceptor.onRequest(request);
-			const expectedHeaders = { 'Authorization': `Bearer ${parameters}`, 'User-Agent': 'node' };
+			const expectedHeaders = {
+				Authorization: `Bearer ${parameters}`,
+				'User-Agent': 'node'
+			};
 
 			expect(interceptedRequest.headers).toStrictEqual(expectedHeaders);
 		});

@@ -75,7 +75,7 @@ export class NetworkingClient {
 		baseUrl,
 		fetchClient,
 		timeoutMS,
-		interceptors,
+		interceptors
 	}: NetworkingClientPositionalParameters) {
 		this.baseUrl = baseUrl;
 		this.fetchClient = fetchClient ?? fetch;
@@ -198,7 +198,9 @@ export class NetworkingClient {
 		let result: Either<HttpRequestError, HttpResponse>;
 
 		try {
-			const mergeRequest = request.merge(this.interceptors.map((x) => x.onRequest(request)));
+			const mergeRequest = request.merge(
+				this.interceptors.map((x) => x.onRequest(request))
+			);
 
 			const fetchRequest = mergeRequest.toFetchRequest();
 
@@ -213,16 +215,22 @@ export class NetworkingClient {
 			} else if (!(err instanceof Error)) {
 				result = left(new UnknownError({ cause: `${err}` }));
 			} else if (err.name === 'TimeoutError') {
-				result = left(new TimeoutError({
-					cause: err.message,
-					timeoutMS: this.timeoutMS
-				}));
+				result = left(
+					new TimeoutError({
+						cause: err.message,
+						timeoutMS: this.timeoutMS
+					})
+				);
 			} else {
 				result = left(new UnknownError({ cause: JSON.stringify(err) }));
 			}
 		}
 
-		fold(result, (l) => this.interceptors.forEach((x) => x.onError(l)), (r) => this.interceptors.forEach((x) => x.onResponse(r)));
+		fold(
+			result,
+			(l) => this.interceptors.forEach((x) => x.onError(l)),
+			(r) => this.interceptors.forEach((x) => x.onResponse(r))
+		);
 
 		return result;
 	}
