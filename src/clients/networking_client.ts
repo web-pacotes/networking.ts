@@ -17,10 +17,10 @@ import { Either } from '../type-utils';
 /**
  * An alias for {@link NetworkingClient} positional parameters.
  */
-type NetworkingClientPositionalParameters = {
+export type NetworkingClientPositionalParameters = {
 	baseUrl: URL;
-	fetchClient: FetchClient;
-	timeoutMS: number;
+	fetchClient?: FetchClient;
+	timeoutMS?: number;
 };
 
 /**
@@ -54,6 +54,8 @@ type NetworkingClientPatchRequestPositionalParameters =
 type NetworkingClientDeleteRequestPositionalParameters =
 	NetworkingClientGetRequestPositionalParameters;
 
+const defaultRequestsTimeoutMS = 30 * 1000;
+
 /**
  * Types an HTTP client that uses Fetch API to perform requests. Any library that mimics fetch can be used, as
  * long as it respects the {@link FetchClient} schema.
@@ -71,8 +73,8 @@ export class NetworkingClient {
 		timeoutMS
 	}: NetworkingClientPositionalParameters) {
 		this.baseUrl = baseUrl;
-		this.fetchClient = fetchClient;
-		this.timeoutMS = timeoutMS;
+		this.fetchClient = fetchClient ?? fetch;
+		this.timeoutMS = timeoutMS ?? defaultRequestsTimeoutMS;
 	}
 
 	get({
@@ -208,7 +210,7 @@ export class NetworkingClient {
 					timeoutMS: this.timeoutMS
 				});
 			} else {
-				result = new UnknownError({ cause: err.stack });
+				result = new UnknownError({ cause: JSON.stringify(err) });
 			}
 		}
 
