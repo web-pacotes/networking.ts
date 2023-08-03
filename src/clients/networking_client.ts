@@ -210,7 +210,7 @@ export class NetworkingClient {
 					timeoutMS: this.timeoutMS
 				});
 			} else {
-				result = new UnknownError({ cause: err.stack });
+				result = new UnknownError({ cause: JSON.stringify(err) });
 			}
 		}
 
