@@ -1,5 +1,8 @@
 import { resolveUrl } from '../models';
-import { NetworkingClient, NetworkingClientPositionalParameters } from './networking_client';
+import {
+	NetworkingClient,
+	NetworkingClientPositionalParameters
+} from './networking_client';
 
 /**
  * Types the needed details to consume the resources of a GitHub repo
@@ -43,7 +46,7 @@ export class RawGitHubNetworkingClient extends NetworkingClient {
 				`${repository.owner}/${repository.repo}/${repository.ref}/`
 			),
 			fetchClient: fetchClient,
-			timeoutMS: timeoutMS,
+			timeoutMS: timeoutMS
 		});
 	}
 }

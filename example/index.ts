@@ -6,12 +6,11 @@ async function main() {
 			owner: 'web-pacotes',
 			repo: 'networking.ts',
 			ref: 'master'
-		},
+		}
 	});
 
 	// Get README.md content
 	const getEndpointResult = await client.get({ endpoint: 'README.md' });
-
 
 	// Tadaaaam!
 	console.info(getEndpointResult);
