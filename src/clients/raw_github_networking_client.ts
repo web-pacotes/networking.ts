@@ -29,7 +29,10 @@ type GitHubRepository = {
  */
 type RawGitHubNetworkingClientPositionalProperties = {
 	repository: GitHubRepository;
-} & Pick<NetworkingClientPositionalParameters, 'fetchClient' | 'timeoutMS' | 'interceptors'>;
+} & Pick<
+	NetworkingClientPositionalParameters,
+	'fetchClient' | 'timeoutMS' | 'interceptors'
+>;
 
 /**
  * A {@link NetworkingClient} that targets RAW GitHub API.
@@ -39,7 +42,7 @@ export class RawGitHubNetworkingClient extends NetworkingClient {
 		repository,
 		fetchClient,
 		timeoutMS,
-		interceptors,
+		interceptors
 	}: RawGitHubNetworkingClientPositionalProperties) {
 		super({
 			baseUrl: resolveUrl(
@@ -48,7 +51,7 @@ export class RawGitHubNetworkingClient extends NetworkingClient {
 			),
 			fetchClient: fetchClient,
 			timeoutMS: timeoutMS,
-			interceptors: interceptors,
+			interceptors: interceptors
 		});
 	}
 }

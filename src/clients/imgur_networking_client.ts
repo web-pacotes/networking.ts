@@ -11,7 +11,10 @@ import {
 type ImgurNetworkingClientNetworkingClientPositionalProperties = {
 	clientId: string;
 	apiVersion: '1' | '2' | '3';
-} & Pick<NetworkingClientPositionalParameters, 'fetchClient' | 'timeoutMS' | 'interceptors'>;
+} & Pick<
+	NetworkingClientPositionalParameters,
+	'fetchClient' | 'timeoutMS' | 'interceptors'
+>;
 
 /**
  * A {@link NetworkingClient} that targets Imgur HTTP API.
@@ -25,27 +28,27 @@ export class ImgurNetworkingClient extends NetworkingClient {
 		timeoutMS
 	}: ImgurNetworkingClientNetworkingClientPositionalProperties) {
 		super({
-			baseUrl: resolveUrl(
-				'https://api.imgur.com/',
-				apiVersion
-			),
+			baseUrl: resolveUrl('https://api.imgur.com/', apiVersion),
 			fetchClient: fetchClient,
 			timeoutMS: timeoutMS,
-			interceptors: [...interceptors ?? [], new ImgurApiAuthorizationInterceptor(clientId)]
+			interceptors: [
+				...(interceptors ?? []),
+				new ImgurApiAuthorizationInterceptor(clientId)
+			]
 		});
 	}
 
 	/**
-	 * Creates a networking client that targets Imgur `v3` HTTP API 
-	 * 
+	 * Creates a networking client that targets Imgur `v3` HTTP API
+	 *
 	 * @param clientId - the identifier that authenticates and authorizes a registered API account in Imgur
 	 * @returns the client ready to consume imgur http api
 	 */
 	static v3(clientId: string): ImgurNetworkingClient {
 		return new ImgurNetworkingClient({
 			apiVersion: '3',
-			clientId: clientId,
-		})
+			clientId: clientId
+		});
 	}
 }
 
@@ -53,12 +56,10 @@ export class ImgurNetworkingClient extends NetworkingClient {
  * An authorization interceptor for Imgur API
  */
 class ImgurApiAuthorizationInterceptor extends AuthorizationInterceptor {
-	constructor(
-		clientId: string
-	) {
+	constructor(clientId: string) {
 		super({
 			scheme: 'Client-ID',
 			parameters: clientId
-		})
+		});
 	}
 }
