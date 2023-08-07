@@ -15,9 +15,6 @@ export function resolveUrl(
 	endpoint: string,
 	query?: UrlQueryParameters
 ): URL {
-
-	console.log(`wtf: baseUrl(${baseUrl}) & endpoint(${endpoint})`)
-
 	const searchParams = new URLSearchParams(query);
 
 	return new URL(`${endpoint}${searchParams.size > 0 ? `?${searchParams}` : ''}`, baseUrl);
