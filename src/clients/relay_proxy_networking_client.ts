@@ -1,3 +1,4 @@
+import { swapUrl } from '../models';
 import { ProxyNetworkingClient } from './proxy_networking_client';
 import { ProxyNetworkingClientPositionalProperties } from './proxy_networking_client';
 import {
@@ -13,7 +14,7 @@ type RelayProxyNetworkingClientPositionalProperties = {
 } & ProxyNetworkingClientPositionalProperties;
 
 type RelayProxyConfigurationPositionalProperties =
-	ProxyConfigurationPositionalProperties & {
+	Omit<ProxyConfigurationPositionalProperties, 'onSend'> & {
 		bypassBodyDelete: boolean;
 		bypassExposeHeaders: boolean;
 	};
@@ -57,7 +58,7 @@ export class RelayProxyConfiguration extends ProxyConfiguration {
 					url: url,
 					headers: {
 						...request.headers,
-						'x-relay-url': fetchRequest.url,
+						'x-relay-url': `${swapUrl(fetchRequest.url, client.baseUrl)}`,
 						'x-include-body': `${bypassBodyDelete}`,
 						'x-bypass-expose-headers': `${bypassExposeHeaders}`
 					}
