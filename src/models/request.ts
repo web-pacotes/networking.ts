@@ -125,6 +125,10 @@ export class HttpRequest {
 
 		const body = convert(this.body);
 
-		return `curl -X ${this.verb.toUpperCase()} '${url.toString()}' ${Object.entries(this.headers).reduce((p, c) => `${p} -H '${c[0]}: ${c[1]}'`, '')} ${body != null ? `-H 'content-type: ${this.mediaType}' -d ${this.body}` : ''}`;
+		return `curl -X ${this.verb.toUpperCase()} '${url.toString()}' ${Object.entries(
+			this.headers
+		).reduce((p, c) => `${p} -H '${c[0]}: ${c[1]}'`, '')} ${
+			body != null ? `-H 'content-type: ${this.mediaType}' -d ${this.body}` : ''
+		}`;
 	}
 }

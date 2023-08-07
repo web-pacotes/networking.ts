@@ -13,11 +13,13 @@ type RelayProxyNetworkingClientPositionalProperties = {
 	configuration: RelayProxyConfiguration;
 } & ProxyNetworkingClientPositionalProperties;
 
-type RelayProxyConfigurationPositionalProperties =
-	Omit<ProxyConfigurationPositionalProperties, 'onSend'> & {
-		bypassBodyDelete: boolean;
-		bypassExposeHeaders: boolean;
-	};
+type RelayProxyConfigurationPositionalProperties = Omit<
+	ProxyConfigurationPositionalProperties,
+	'onSend'
+> & {
+	bypassBodyDelete: boolean;
+	bypassExposeHeaders: boolean;
+};
 
 /**
  * A {@link ProxyNetworkingClient} that proxies HTTP requests using [Relay Proxy API](https://github.com/freitzzz/relay-worker).

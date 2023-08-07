@@ -26,7 +26,7 @@ describe('url', function () {
 		test('concats query parameters if present', function () {
 			const baseUrl = 'https://github.com';
 			const endpoint = 'web-pacotes';
-			const params = { 'x': 'y' };
+			const params = { x: 'y' };
 
 			const url = resolveUrl(`${baseUrl}/`, endpoint, params).toString();
 			const expectedUrl = `${baseUrl}/${endpoint}?x=y`;
