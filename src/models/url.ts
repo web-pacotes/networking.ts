@@ -15,5 +15,31 @@ export function resolveUrl(
 	endpoint: string,
 	query?: UrlQueryParameters
 ): URL {
-	return new URL(`${endpoint}${new URLSearchParams(query)}`, baseUrl);
+	const searchParams = new URLSearchParams(query);
+
+	return new URL(
+		`${endpoint}${searchParams.size > 0 ? `?${searchParams}` : ''}`,
+		baseUrl
+	);
+}
+
+/**
+ * Swaps the host/origin of two urls.
+ *
+ * @param fullUrl - The original "full" url which host is being swapped. (e.g., https://google.com/search?q=...)
+ * @param hostUrl - The url which contains the host to use instead of the original host url. (e.g., https://proxy.google.com)
+ * @returns an {@link URL} that reflects the swap of the host in the original full url. (e.g., https://proxy.google.com/search?q=...)
+ */
+export function swapUrl(fullUrl: URL | string, hostUrl: URL | string): URL {
+	fullUrl = new URL(fullUrl);
+	hostUrl = new URL(hostUrl);
+
+	const baseUrl = hostUrl.origin;
+	const endpoint =
+		`${hostUrl.pathname}${fullUrl.pathname}${fullUrl.search}`.replace(
+			'//',
+			'/'
+		);
+
+	return resolveUrl(baseUrl, endpoint);
 }

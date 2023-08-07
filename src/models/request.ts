@@ -110,4 +110,25 @@ export class HttpRequest {
 
 		return new Request(url, init);
 	}
+
+	/**
+	 * Transforms this {@link HttpRequest} instance in a *cURL* like request.
+	 *
+	 * @returns a string that represents the curl request.
+	 */
+	toCurl(): string {
+		let url = this.url;
+
+		if (Object.keys(this.query).length > 0) {
+			url = resolveUrl(this.url, '', this.query);
+		}
+
+		const body = convert(this.body);
+
+		return `curl -X ${this.verb.toUpperCase()} '${url.toString()}' ${Object.entries(
+			this.headers
+		).reduce((p, c) => `${p} -H '${c[0]}: ${c[1]}'`, '')} ${
+			body != null ? `-H 'content-type: ${this.mediaType}' -d ${this.body}` : ''
+		}`;
+	}
 }
