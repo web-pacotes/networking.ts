@@ -1,5 +1,7 @@
 import { Interceptor } from '../interceptors';
 import {
+	CacheMode,
+	CorsMode,
 	HttpBody,
 	HttpHeaders,
 	HttpRequest,
@@ -34,17 +36,19 @@ type NetworkingClientRequestsPositionalParameters = {
 	body?: HttpBody;
 	headers?: HttpHeaders;
 	query?: UrlQueryParameters;
+	cache?: CacheMode;
+	cors?: CorsMode;
 };
 
 // Alias for get, post, put, delete and patch methods
 type NetworkingClientGetRequestPositionalParameters = Pick<
 	NetworkingClientRequestsPositionalParameters,
-	'endpoint' | 'headers' | 'query'
+	'endpoint' | 'headers' | 'query' | 'cache' | 'cors'
 >;
 
 type NetworkingClientPostRequestPositionalParameters = Pick<
 	NetworkingClientRequestsPositionalParameters,
-	'endpoint' | 'headers' | 'query' | 'body' | 'mediaType'
+	'endpoint' | 'headers' | 'query' | 'body' | 'mediaType' | 'cache' | 'cors'
 >;
 
 type NetworkingClientPutRequestPositionalParameters =
@@ -86,7 +90,9 @@ export class NetworkingClient {
 	get({
 		endpoint,
 		headers,
-		query
+		query,
+		cache,
+		cors,
 	}: NetworkingClientGetRequestPositionalParameters): Promise<
 		Either<HttpRequestError, HttpResponse>
 	> {
@@ -97,7 +103,9 @@ export class NetworkingClient {
 				url: url,
 				verb: 'get',
 				query: query,
-				headers: headers
+				headers: headers,
+				cache: cache,
+				cors: cors,
 			})
 		});
 	}
@@ -107,7 +115,9 @@ export class NetworkingClient {
 		mediaType,
 		body,
 		headers,
-		query
+		query,
+		cache,
+		cors,
 	}: NetworkingClientPostRequestPositionalParameters): Promise<
 		Either<HttpRequestError, HttpResponse>
 	> {
@@ -120,7 +130,9 @@ export class NetworkingClient {
 				mediaType: mediaType ?? MediaType.json,
 				body: body,
 				query: query,
-				headers: headers
+				headers: headers,
+				cache: cache,
+				cors: cors,
 			})
 		});
 	}
@@ -130,7 +142,9 @@ export class NetworkingClient {
 		mediaType,
 		body,
 		headers,
-		query
+		query,
+		cache,
+		cors,
 	}: NetworkingClientPutRequestPositionalParameters): Promise<
 		Either<HttpRequestError, HttpResponse>
 	> {
@@ -143,7 +157,9 @@ export class NetworkingClient {
 				mediaType: mediaType ?? MediaType.json,
 				body: body,
 				query: query,
-				headers: headers
+				headers: headers,
+				cache: cache,
+				cors: cors,
 			})
 		});
 	}
@@ -153,7 +169,9 @@ export class NetworkingClient {
 		mediaType,
 		body,
 		headers,
-		query
+		query,
+		cache,
+		cors,
 	}: NetworkingClientPatchRequestPositionalParameters): Promise<
 		Either<HttpRequestError, HttpResponse>
 	> {
@@ -166,7 +184,9 @@ export class NetworkingClient {
 				mediaType: mediaType ?? MediaType.json,
 				body: body,
 				query: query,
-				headers: headers
+				headers: headers,
+				cache: cache,
+				cors: cors,
 			})
 		});
 	}
@@ -174,7 +194,9 @@ export class NetworkingClient {
 	delete({
 		endpoint,
 		headers,
-		query
+		query,
+		cache,
+		cors,
 	}: NetworkingClientDeleteRequestPositionalParameters): Promise<
 		Either<HttpRequestError, HttpResponse>
 	> {
@@ -185,7 +207,9 @@ export class NetworkingClient {
 				url: url,
 				verb: 'delete',
 				query: query,
-				headers: headers
+				headers: headers,
+				cache: cache,
+				cors: cors,
 			})
 		});
 	}

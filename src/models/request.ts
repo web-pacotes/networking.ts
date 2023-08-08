@@ -4,12 +4,14 @@ import { HttpVerb } from './verb';
 import { HttpBody, convert, empty } from './body';
 import { UrlQueryParameters } from './params';
 import { resolveUrl } from './url';
+import { CacheMode } from './cache';
+import { CorsMode } from './cors';
 
 /**
  * An alias for {@link HttpRequest} positional parameters.
  */
 type HttpRequestPositionalProperties = Pick<HttpRequest, 'url' | 'verb'> &
-	Pick<Partial<HttpRequest>, 'body' | 'headers' | 'mediaType' | 'query'>;
+	Pick<Partial<HttpRequest>, 'body' | 'headers' | 'mediaType' | 'query' | 'cache' | 'cors'>;
 
 /**
  * Types an HTTP request. Only the url and verb fields are required, if others are not provided it defaults to a request with
@@ -28,19 +30,27 @@ export class HttpRequest {
 
 	readonly verb: HttpVerb;
 
+	readonly cache: CacheMode;
+
+	readonly cors: CorsMode;
+
 	constructor({
 		url,
 		verb,
 		headers,
 		query,
 		mediaType,
-		body
+		body,
+		cache,
+		cors,
 	}: HttpRequestPositionalProperties) {
 		this.url = url;
 		this.verb = verb;
 		this.headers = headers ?? <HttpHeaders>{};
 		this.query = query ?? <UrlQueryParameters>{};
 		this.mediaType = mediaType ?? MediaType.binary;
+		this.cache = cache ?? 'default';
+		this.cors = cors ?? 'no-cors';
 		this.body = body ?? empty();
 	}
 
@@ -95,6 +105,8 @@ export class HttpRequest {
 	toFetchRequest(): Request {
 		const init = <RequestInit>{
 			body: convert(this.body),
+			cache: this.cache,
+			mode: this.cors,
 			method: this.verb,
 			headers: {
 				...this.headers,
@@ -127,8 +139,7 @@ export class HttpRequest {
 
 		return `curl -X ${this.verb.toUpperCase()} '${url.toString()}' ${Object.entries(
 			this.headers
-		).reduce((p, c) => `${p} -H '${c[0]}: ${c[1]}'`, '')} ${
-			body != null ? `-H 'content-type: ${this.mediaType}' -d ${this.body}` : ''
-		}`;
+		).reduce((p, c) => `${p} -H '${c[0]}: ${c[1]}'`, '')} ${body != null ? `-H 'content-type: ${this.mediaType}' -d ${this.body}` : ''
+			}`;
 	}
 }
