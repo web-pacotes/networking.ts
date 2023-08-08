@@ -73,7 +73,7 @@ export class HttpRequest {
 			mediaType: value.mediaType ?? this.mediaType,
 			body: value.body ?? this.body,
 			cache: value.cache ?? this.cache,
-			cors: value.cors ?? this.cors,
+			cors: value.cors ?? this.cors
 		});
 	}
 
@@ -144,7 +144,8 @@ export class HttpRequest {
 
 		return `curl -X ${this.verb.toUpperCase()} '${url.toString()}' ${Object.entries(
 			this.headers
-		).reduce((p, c) => `${p} -H '${c[0]}: ${c[1]}'`, '')} ${body != null ? `-H 'content-type: ${this.mediaType}' -d ${this.body}` : ''
-			}`;
+		).reduce((p, c) => `${p} -H '${c[0]}: ${c[1]}'`, '')} ${
+			body != null ? `-H 'content-type: ${this.mediaType}' -d ${this.body}` : ''
+		}`;
 	}
 }
