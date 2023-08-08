@@ -1,5 +1,11 @@
 # @web-pacotes/networking
 
+## 0.0.3
+
+### Patch Changes
+
+- 9a70606: bugfix: cache and cors properties not being filled after copyWith
+
 ## 0.0.2
 
 ### Patch Changes
