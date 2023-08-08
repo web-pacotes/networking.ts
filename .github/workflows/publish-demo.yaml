@@ -13,7 +13,7 @@ jobs:
       - uses: actions/setup-node@v3
         with:
           node-version: 16.x
-          cache: "npm"
+          cache: 'npm'
 
       - run: npm install --frozen-lockfile
       - run: (cd example_web; npm install --frozen-lockfile)
