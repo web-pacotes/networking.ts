@@ -92,7 +92,7 @@ export class NetworkingClient {
 		headers,
 		query,
 		cache,
-		cors,
+		cors
 	}: NetworkingClientGetRequestPositionalParameters): Promise<
 		Either<HttpRequestError, HttpResponse>
 	> {
@@ -105,7 +105,7 @@ export class NetworkingClient {
 				query: query,
 				headers: headers,
 				cache: cache,
-				cors: cors,
+				cors: cors
 			})
 		});
 	}
@@ -117,7 +117,7 @@ export class NetworkingClient {
 		headers,
 		query,
 		cache,
-		cors,
+		cors
 	}: NetworkingClientPostRequestPositionalParameters): Promise<
 		Either<HttpRequestError, HttpResponse>
 	> {
@@ -132,7 +132,7 @@ export class NetworkingClient {
 				query: query,
 				headers: headers,
 				cache: cache,
-				cors: cors,
+				cors: cors
 			})
 		});
 	}
@@ -144,7 +144,7 @@ export class NetworkingClient {
 		headers,
 		query,
 		cache,
-		cors,
+		cors
 	}: NetworkingClientPutRequestPositionalParameters): Promise<
 		Either<HttpRequestError, HttpResponse>
 	> {
@@ -159,7 +159,7 @@ export class NetworkingClient {
 				query: query,
 				headers: headers,
 				cache: cache,
-				cors: cors,
+				cors: cors
 			})
 		});
 	}
@@ -171,7 +171,7 @@ export class NetworkingClient {
 		headers,
 		query,
 		cache,
-		cors,
+		cors
 	}: NetworkingClientPatchRequestPositionalParameters): Promise<
 		Either<HttpRequestError, HttpResponse>
 	> {
@@ -186,7 +186,7 @@ export class NetworkingClient {
 				query: query,
 				headers: headers,
 				cache: cache,
-				cors: cors,
+				cors: cors
 			})
 		});
 	}
@@ -196,7 +196,7 @@ export class NetworkingClient {
 		headers,
 		query,
 		cache,
-		cors,
+		cors
 	}: NetworkingClientDeleteRequestPositionalParameters): Promise<
 		Either<HttpRequestError, HttpResponse>
 	> {
@@ -209,7 +209,7 @@ export class NetworkingClient {
 				query: query,
 				headers: headers,
 				cache: cache,
-				cors: cors,
+				cors: cors
 			})
 		});
 	}

@@ -11,7 +11,10 @@ import { CorsMode } from './cors';
  * An alias for {@link HttpRequest} positional parameters.
  */
 type HttpRequestPositionalProperties = Pick<HttpRequest, 'url' | 'verb'> &
-	Pick<Partial<HttpRequest>, 'body' | 'headers' | 'mediaType' | 'query' | 'cache' | 'cors'>;
+	Pick<
+		Partial<HttpRequest>,
+		'body' | 'headers' | 'mediaType' | 'query' | 'cache' | 'cors'
+	>;
 
 /**
  * Types an HTTP request. Only the url and verb fields are required, if others are not provided it defaults to a request with
@@ -42,7 +45,7 @@ export class HttpRequest {
 		mediaType,
 		body,
 		cache,
-		cors,
+		cors
 	}: HttpRequestPositionalProperties) {
 		this.url = url;
 		this.verb = verb;
@@ -139,7 +142,8 @@ export class HttpRequest {
 
 		return `curl -X ${this.verb.toUpperCase()} '${url.toString()}' ${Object.entries(
 			this.headers
-		).reduce((p, c) => `${p} -H '${c[0]}: ${c[1]}'`, '')} ${body != null ? `-H 'content-type: ${this.mediaType}' -d ${this.body}` : ''
-			}`;
+		).reduce((p, c) => `${p} -H '${c[0]}: ${c[1]}'`, '')} ${
+			body != null ? `-H 'content-type: ${this.mediaType}' -d ${this.body}` : ''
+		}`;
 	}
 }
