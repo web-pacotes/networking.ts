@@ -71,7 +71,9 @@ export class HttpRequest {
 			headers: value.headers ?? this.headers,
 			query: value.query ?? this.query,
 			mediaType: value.mediaType ?? this.mediaType,
-			body: value.body ?? this.body
+			body: value.body ?? this.body,
+			cache: value.cache ?? this.cache,
+			cors: value.cors ?? this.cors
 		});
 	}
 
