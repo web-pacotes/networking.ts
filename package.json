@@ -9,7 +9,10 @@
 	"scripts": {
 		"build": "tsup src/index.ts --format cjs,esm --dts --sourcemap",
 		"start": "swc src/* -d dist && swc example/index.ts -d example/dist && node example/dist/index.js",
+		"start:web": "npm run demo",
 		"test": "jest",
+		"demo": "(cd example_web; npx tailwindcss -i ./styles.css -o ./dist/output.css) && open example_web/index.html",
+		"demo:publish": "(cd example_web; npx tailwindcss -i ./styles.css -o ./dist/output.css; temp=$(mktemp -d); cp -r -t $temp index.html favicon.png .nojekyll dist; npx gh-pagez -d $temp -t true -r https://github.com/freitzzz/demo-networking-ts -b master -m https://github.com/freitzzz/demo-networking-ts)",
 		"docs": "typedoc",
 		"docs:publish": "typedoc && gh-pagez -d docs -t true",
 		"lint": "prettier --plugin-search-dir . --check . && eslint . --fix",
