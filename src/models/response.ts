@@ -1,5 +1,5 @@
 import { Option, Range } from '../type-utils';
-import { HttpBody, of } from './body';
+import { HttpBody, extract, of } from './body';
 import { HttpError } from './errors';
 import { HttpHeaders } from './headers';
 import { MediaType, tryParseContentType } from './media_type';
@@ -47,13 +47,13 @@ type JsonHttpResponsePositionalProperties =
 type ImageHttpResponsePositionalProperties =
 	SuccessfulHttpResponsePositionalProperties & {
 		mediaType:
-			| MediaType.jpeg
-			| MediaType.png
-			| MediaType.bmp
-			| MediaType.gif
-			| MediaType.svg
-			| MediaType.tiff
-			| MediaType.webp;
+		| MediaType.jpeg
+		| MediaType.png
+		| MediaType.bmp
+		| MediaType.gif
+		| MediaType.svg
+		| MediaType.tiff
+		| MediaType.webp;
 	};
 
 type PlainTextHttpResponsePositionalProperties =
@@ -142,11 +142,9 @@ export abstract class HttpResponse {
 	}
 
 	toString(): string {
-		return `${this.constructor.name}(Status Code: ${
-			this.statusCode
-		} | Headers: ${this.headers} | Body: ${
-			this.stringify ? this.body.get() : '...'
-		})`;
+		return `${this.constructor.name}(Status Code: ${this.statusCode
+			} | Headers: ${this.headers} | Body: ${this.stringify ? extract(this.body) : '...'
+			})`;
 	}
 }
 
