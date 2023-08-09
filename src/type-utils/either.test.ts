@@ -42,17 +42,25 @@ describe('either', function () {
 		test('folds error value if monad is error', function () {
 			const monad = left('error');
 
-			const value = fold(monad, (l) => l, (r) => r);
+			const value = fold(
+				monad,
+				(l) => l,
+				(r) => r
+			);
 
-			expect(value).toBe('error')
+			expect(value).toBe('error');
 		});
 
 		test('folds success value if monad is success', function () {
 			const monad = right('success');
 
-			const value = fold(monad, (l) => l, (r) => r);
+			const value = fold(
+				monad,
+				(l) => l,
+				(r) => r
+			);
 
-			expect(value).toBe('success')
+			expect(value).toBe('success');
 		});
 	});
 });

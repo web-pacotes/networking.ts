@@ -56,24 +56,20 @@ export function fold<F, L, R>(
 
 /**
  * Provides a type guard to check if the monad is an error.
- * 
+ *
  * @param monad - the either monad to check if its an error
  * @returns true if error, false otherwise
  */
-export function isLeft<L, R>(
-	monad: Either<L, R>,
-): monad is Left<L> {
+export function isLeft<L, R>(monad: Either<L, R>): monad is Left<L> {
 	return monad.tag === 'left';
 }
 
 /**
  * Provides a type guard to check if the monad is a success result.
- * 
+ *
  * @param monad - the either monad to check if its a success
  * @returns true if success, false otherwise
  */
-export function isRight<L, R>(
-	monad: Either<L, R>,
-): monad is Right<R> {
-	return !isLeft(monad)
+export function isRight<L, R>(monad: Either<L, R>): monad is Right<R> {
+	return !isLeft(monad);
 }
