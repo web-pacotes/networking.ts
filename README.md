@@ -66,13 +66,13 @@ Another niche detail about the library, is that it does not relly only on the ex
 
 There is support for interceptors which can act at three levels:
 
-- *request* level, useful to include mandatory headers before a request is sent to the server.
-- *response* level, useful to parse the response in a different type before a response is returned to the caller.
-- *request error* level, useful to log error messages before the error is returned to the caller.
+- _request_ level, useful to include mandatory headers before a request is sent to the server.
+- _response_ level, useful to parse the response in a different type before a response is returned to the caller.
+- _request error_ level, useful to log error messages before the error is returned to the caller.
 
 To create an interceptor you will have to extend either the `Interceptor`, `RequestInterceptor`, `ResponseInterceptor` or `ErrorInterceptor` classes. The major difference in all of them, is that the last ones only describe how to intercept a request/response/request error.
 
-Additionally, you can make use of the existing `AuthorizationInterceptor` class, which intercepts a request and appends a *basic* authorization header. Here's how it's useful in the `ImgurNetworkingClient`:
+Additionally, you can make use of the existing `AuthorizationInterceptor` class, which intercepts a request and appends a _basic_ authorization header. Here's how it's useful in the `ImgurNetworkingClient`:
 
 ```typescript
 class ImgurApiAuthorizationInterceptor extends AuthorizationInterceptor {
