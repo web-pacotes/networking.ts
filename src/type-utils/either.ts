@@ -36,7 +36,7 @@ export function right<L, R>(r: R): Either<L, R> {
 /**
  * Folds the value of either monad by computing the left callback, if an error, or right callback if a success result.
  *
- * @param monad - the either monad being folder
+ * @param monad - the either monad being folded
  * @param ifLeft - callback that folds an error in a common type
  * @param ifRight - callback that folds a success result in a common type
  * @returns the folded value based on the computed callbacks.
@@ -52,4 +52,24 @@ export function fold<F, L, R>(
 		case 'right':
 			return ifRight(monad.value);
 	}
+}
+
+/**
+ * Provides a type guard to check if the monad is an error.
+ *
+ * @param monad - the either monad to check if its an error
+ * @returns true if error, false otherwise
+ */
+export function isLeft<L, R>(monad: Either<L, R>): monad is Left<L> {
+	return monad.tag === 'left';
+}
+
+/**
+ * Provides a type guard to check if the monad is a success result.
+ *
+ * @param monad - the either monad to check if its a success
+ * @returns true if success, false otherwise
+ */
+export function isRight<L, R>(monad: Either<L, R>): monad is Right<R> {
+	return !isLeft(monad);
 }
