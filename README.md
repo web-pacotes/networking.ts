@@ -60,7 +60,7 @@ return a `Either<HttpRequestError, HttpResponse>` which describes that the resul
 
 ### Fetch Implementation
 
-Another niche detail about the library, is that it does not relly only on the existing `fetch` implementation. Instead, it allows library clients to pass a `fetch` function that knows how to resolve requests based on the `fetch` spec. This is really neat when making requests in the browser or in Svelte.js, which bundles a custom `fetch` implementation.
+Another niche detail about the library, is that it does not rely only on the existing `fetch` implementation. Instead, it allows library clients to pass a `fetch` function that knows how to resolve requests based on the `fetch` spec. This is really neat when making requests in the browser or in Svelte.js, which bundles a custom `fetch` implementation.
 
 ### Interceptors
 
