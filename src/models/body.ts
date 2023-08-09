@@ -8,17 +8,18 @@ type Anything<T = object | Binary | JSON | JSONArray | Text | null> = T;
 type FetchBody = XMLHttpRequestBodyInit | null;
 
 /**
- * Types a request/response body as a {Buffer@link Lazy<Anything>}.
+ * Types a request/response body as a {@link Lazy<Anything>} instance or {@link Anything} value.
  */
-export type HttpBody<T = Anything> = Lazy<T>;
+export type HttpBody<T = Anything> = T | LazyHttpBody<T>;
+type LazyHttpBody<T = Anything> = Lazy<T>;
 
 /**
  * Creates a {@link HttpBody} that resolves an empty(null) value.
  *
- * @returns a lazy {@link HttpBody} that resolves a null value.
+ * @returns a {@link HttpBody} that resolves a null value.
  */
 export function empty(): HttpBody {
-	return of(() => null);
+	return null;
 }
 
 /**
@@ -31,13 +32,27 @@ export function of<T = Anything>(value: () => T): HttpBody<T> {
 }
 
 /**
+ * Extracts the value of a {@link HttpBody} type.
+ *
+ * @param body - the body which value will be extracted
+ * @returns a value of {@link T} type, extracted from the {@link HttpBody} type.
+ */
+export function extract<T = Anything>(body: HttpBody<T>): T {
+	if (isLazyBody(body)) {
+		return body.get();
+	}
+
+	return body;
+}
+
+/**
  * Converts a {@link HttpBody} in a {@link FetchBody}.
  *
  * @param body - the body to convert
  * @returns a type of {@link FetchBody} that translates {@link HttpBody}.
  */
 export function convert<T = Anything>(body: HttpBody<T>): FetchBody {
-	const data = body.get();
+	const data = extract(body);
 
 	if (!data) {
 		return null;
@@ -46,6 +61,10 @@ export function convert<T = Anything>(body: HttpBody<T>): FetchBody {
 	} else {
 		return JSON.stringify(data);
 	}
+}
+
+function isLazyBody<T = Anything>(body: HttpBody<T>): body is LazyHttpBody<T> {
+	return body instanceof Lazy;
 }
 
 function isBinary(data: Anything): data is Blob {

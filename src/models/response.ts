@@ -1,5 +1,5 @@
 import { Option, Range } from '../type-utils';
-import { HttpBody, of } from './body';
+import { HttpBody, extract, of } from './body';
 import { HttpError } from './errors';
 import { HttpHeaders } from './headers';
 import { MediaType, tryParseContentType } from './media_type';
@@ -145,7 +145,7 @@ export abstract class HttpResponse {
 		return `${this.constructor.name}(Status Code: ${
 			this.statusCode
 		} | Headers: ${this.headers} | Body: ${
-			this.stringify ? this.body.get() : '...'
+			this.stringify ? extract(this.body) : '...'
 		})`;
 	}
 }
