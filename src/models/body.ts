@@ -33,9 +33,9 @@ export function of<T = Anything>(value: () => T): HttpBody<T> {
 
 /**
  * Extracts the value of a {@link HttpBody} type.
- * 
+ *
  * @param body - the body which value will be extracted
- * @returns a value of {@link T} type, extracted from the {@link HttpBody} type. 
+ * @returns a value of {@link T} type, extracted from the {@link HttpBody} type.
  */
 export function extract<T = Anything>(body: HttpBody<T>): T {
 	if (isLazyBody(body)) {
