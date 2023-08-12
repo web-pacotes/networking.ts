@@ -18,7 +18,7 @@ type LazyHttpBody<T = Anything> = Lazy<T>;
  *
  * @returns a {@link HttpBody} that resolves a null value.
  */
-export function empty(): HttpBody {
+export function empty(): HttpBody<null> {
 	return null;
 }
 
