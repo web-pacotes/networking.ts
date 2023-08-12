@@ -1,5 +1,14 @@
 import { Range } from '../type-utils';
-import { Anything, Binary, HttpBody, JSON, JSONArray, empty, extract, of } from './body';
+import {
+	Anything,
+	Binary,
+	HttpBody,
+	JSON,
+	JSONArray,
+	empty,
+	extract,
+	of
+} from './body';
 import { HttpError } from './errors';
 import { HttpHeaders } from './headers';
 import { MediaType, tryParseContentType } from './media_type';
@@ -139,9 +148,9 @@ export abstract class HttpResponse {
 
 	/**
 	 * Casts the response body as of type {@link HttpBody<T>}. Useful to extract the body to a specific type.
-	 * 
+	 *
 	 * **Unsafe** method!
-	 * 
+	 *
 	 * @returns a typed version of HttpBody
 	 */
 	typedBody<T extends Anything>(): HttpBody<T> {
@@ -149,9 +158,11 @@ export abstract class HttpResponse {
 	}
 
 	toString(): string {
-		return `${this.constructor.name}(Status Code: ${this.statusCode
-			} | Headers: ${this.headers} | Body: ${this.stringify ? extract(this.body) : '...'
-			})`;
+		return `${this.constructor.name}(Status Code: ${
+			this.statusCode
+		} | Headers: ${this.headers} | Body: ${
+			this.stringify ? extract(this.body) : '...'
+		})`;
 	}
 }
 
@@ -425,20 +436,25 @@ function isImageMediaType(mediaType: MediaType): boolean {
 	return mediaType.startsWith('image/');
 }
 
-function buildHttpResponse(statusCode: number, mediaType: MediaType, headers: HttpHeaders, body: HttpBody) {
+function buildHttpResponse(
+	statusCode: number,
+	mediaType: MediaType,
+	headers: HttpHeaders,
+	body: HttpBody
+) {
 	if (statusCode > 499) {
 		return new ServerErrorHttpResponse({
 			headers: headers,
 			mediaType: mediaType,
 			statusCode: statusCode as Range<500, 600>,
-			body: body,
+			body: body
 		});
 	} else if (statusCode > 399) {
 		return new ClientErrorHttpResponse({
 			headers: headers,
 			mediaType: mediaType,
 			statusCode: statusCode as Range<400, 500>,
-			body: body,
+			body: body
 		});
 	} else if (statusCode > 299) {
 		return new RedirectionHttpResponse({
@@ -473,7 +489,11 @@ function extractEssential(response: Response) {
 	};
 }
 
-function extractBody(response: Response, mediaType: MediaType, statusCode: number) {
+function extractBody(
+	response: Response,
+	mediaType: MediaType,
+	statusCode: number
+) {
 	if (statusCode < 200 || (statusCode > 299 && statusCode < 400)) {
 		return empty();
 	}

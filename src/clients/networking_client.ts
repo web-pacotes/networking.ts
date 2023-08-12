@@ -216,7 +216,7 @@ export class NetworkingClient {
 
 	async send({
 		request,
-		eager,
+		eager
 	}: {
 		request: HttpRequest;
 		eager?: boolean;
@@ -235,11 +235,12 @@ export class NetworkingClient {
 			});
 
 			if (eager ?? true) {
-				result = right(await HttpResponse.fromEagerFetchResponse(fetchResponse));
+				result = right(
+					await HttpResponse.fromEagerFetchResponse(fetchResponse)
+				);
 			} else {
 				result = right(HttpResponse.fromFetchResponse(fetchResponse));
 			}
-
 		} catch (err) {
 			if (err === undefined) {
 				result = left(new NoInternetConnectionError());
