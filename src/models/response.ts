@@ -39,9 +39,15 @@ type ServerErrorHttpResponsePositionalProperties = Omit<
 	'stringify'
 > & { statusCode: Range<500, 600>; stringify?: boolean };
 
-type BinaryHttpResponse = Omit<HttpResponse, 'body'> & { body: HttpBody<Binary> };
-type PlainTextHttpResponse = Omit<HttpResponse, 'body'> & { body: HttpBody<Text> };
-type JsonHttpResponse = Omit<HttpResponse, 'body'> & { body: HttpBody<JSON | JSONArray> };
+type BinaryHttpResponse = Omit<HttpResponse, 'body'> & {
+	body: HttpBody<Binary>;
+};
+type PlainTextHttpResponse = Omit<HttpResponse, 'body'> & {
+	body: HttpBody<Text>;
+};
+type JsonHttpResponse = Omit<HttpResponse, 'body'> & {
+	body: HttpBody<JSON | JSONArray>;
+};
 type ImageHttpResponse = BinaryHttpResponse;
 
 /**
@@ -73,34 +79,34 @@ export abstract class HttpResponse {
 				headers: headers,
 				mediaType: mediaType,
 				statusCode: statusCode as Range<500, 600>,
-				body: extractBody(response, mediaType),
+				body: extractBody(response, mediaType)
 			});
 		} else if (statusCode > 399) {
 			return new ClientErrorHttpResponse({
 				headers: headers,
 				mediaType: mediaType,
 				statusCode: statusCode as Range<400, 500>,
-				body: extractBody(response, mediaType),
+				body: extractBody(response, mediaType)
 			});
 		} else if (statusCode > 299) {
 			return new RedirectionHttpResponse({
 				headers: headers,
 				mediaType: mediaType,
 				statusCode: statusCode as Range<300, 400>,
-				location: new URL(headers['location']),
+				location: new URL(headers['location'])
 			});
 		} else if (statusCode > 199) {
 			return new SuccessfulHttpResponse({
 				headers: headers,
 				mediaType: mediaType,
 				statusCode: statusCode as Range<200, 300>,
-				body: extractBody(response, mediaType),
+				body: extractBody(response, mediaType)
 			});
 		} else {
 			return new InformationalHttpResponse({
 				headers: headers,
 				mediaType: mediaType,
-				statusCode: statusCode as Range<100, 200>,
+				statusCode: statusCode as Range<100, 200>
 			});
 		}
 	}
@@ -134,10 +140,7 @@ export abstract class HttpResponse {
 	 * @returns true if response type matches the ok response types.
 	 */
 	notOk(): boolean {
-		return (
-			isClientErrorResponse(this) ||
-			isServerErrorResponse(this)
-		);
+		return isClientErrorResponse(this) || isServerErrorResponse(this);
 	}
 
 	/**
@@ -150,9 +153,11 @@ export abstract class HttpResponse {
 	}
 
 	toString(): string {
-		return `${this.constructor.name}(Status Code: ${this.statusCode
-			} | Headers: ${this.headers} | Body: ${this.stringify ? extract(this.body) : '...'
-			})`;
+		return `${this.constructor.name}(Status Code: ${
+			this.statusCode
+		} | Headers: ${this.headers} | Body: ${
+			this.stringify ? extract(this.body) : '...'
+		})`;
 	}
 }
 
@@ -271,101 +276,119 @@ export class ServerErrorHttpResponse extends HttpResponse {
 }
 
 /**
- * Checks if a {@link HttpResponse} is an instance of {@link InformationalHttpResponse}, providing a 
+ * Checks if a {@link HttpResponse} is an instance of {@link InformationalHttpResponse}, providing a
  * type guard for that type.
- * 
+ *
  * @param response - the response instance being checked
  * @returns boolean true if the response is an instance of {@link InformationalHttpResponse}, false otherwise.
  */
-export function isInformationResponse(response: HttpResponse): response is InformationalHttpResponse {
+export function isInformationResponse(
+	response: HttpResponse
+): response is InformationalHttpResponse {
 	return response instanceof InformationalHttpResponse;
 }
 
 /**
- * Checks if a {@link HttpResponse} is an instance of {@link SuccessfulHttpResponse}, providing a 
+ * Checks if a {@link HttpResponse} is an instance of {@link SuccessfulHttpResponse}, providing a
  * type guard for that type.
- * 
+ *
  * @param response - the response instance being checked
  * @returns boolean true if the response is an instance of {@link SuccessfulHttpResponse}, false otherwise.
  */
-export function isSuccessfulResponse(response: HttpResponse): response is SuccessfulHttpResponse {
+export function isSuccessfulResponse(
+	response: HttpResponse
+): response is SuccessfulHttpResponse {
 	return response instanceof SuccessfulHttpResponse;
 }
 
 /**
- * Checks if a {@link HttpResponse} is an instance of {@link RedirectionHttpResponse}, providing a 
+ * Checks if a {@link HttpResponse} is an instance of {@link RedirectionHttpResponse}, providing a
  * type guard for that type.
- * 
+ *
  * @param response - the response instance being checked
  * @returns boolean true if the response is an instance of {@link RedirectionHttpResponse}, false otherwise.
  */
-export function isRedirectionResponse(response: HttpResponse): response is RedirectionHttpResponse {
+export function isRedirectionResponse(
+	response: HttpResponse
+): response is RedirectionHttpResponse {
 	return response instanceof RedirectionHttpResponse;
 }
 
 /**
- * Checks if a {@link HttpResponse} is an instance of {@link ClientErrorHttpResponse}, providing a 
+ * Checks if a {@link HttpResponse} is an instance of {@link ClientErrorHttpResponse}, providing a
  * type guard for that type.
- * 
+ *
  * @param response - the response instance being checked
  * @returns boolean true if the response is an instance of {@link ClientErrorHttpResponse}, false otherwise.
  */
-export function isClientErrorResponse(response: HttpResponse): response is ClientErrorHttpResponse {
+export function isClientErrorResponse(
+	response: HttpResponse
+): response is ClientErrorHttpResponse {
 	return response instanceof ClientErrorHttpResponse;
 }
 
 /**
- * Checks if a {@link HttpResponse} is an instance of {@link ServerErrorHttpResponse}, providing a 
+ * Checks if a {@link HttpResponse} is an instance of {@link ServerErrorHttpResponse}, providing a
  * type guard for that type.
- * 
+ *
  * @param response - the response instance being checked
  * @returns boolean true if the response is an instance of {@link ServerErrorHttpResponse}, false otherwise.
  */
-export function isServerErrorResponse(response: HttpResponse): response is ServerErrorHttpResponse {
+export function isServerErrorResponse(
+	response: HttpResponse
+): response is ServerErrorHttpResponse {
 	return response instanceof ServerErrorHttpResponse;
 }
 
 /**
- * Checks if a {@link HttpResponse} is an instance of {@link BinaryHttpResponse}, providing a 
+ * Checks if a {@link HttpResponse} is an instance of {@link BinaryHttpResponse}, providing a
  * type guard for that type.
- * 
+ *
  * @param response - the response instance being checked
  * @returns boolean true if the response is an instance of {@link BinaryHttpResponse}, false otherwise.
  */
-export function isBinaryResponse(response: HttpResponse): response is BinaryHttpResponse {
+export function isBinaryResponse(
+	response: HttpResponse
+): response is BinaryHttpResponse {
 	return isBinaryMediaType(response.mediaType);
 }
 
 /**
- * Checks if a {@link HttpResponse} is an instance of {@link JsonHttpResponse}, providing a 
+ * Checks if a {@link HttpResponse} is an instance of {@link JsonHttpResponse}, providing a
  * type guard for that type.
- * 
+ *
  * @param response - the response instance being checked
  * @returns boolean true if the response is an instance of {@link JsonHttpResponse}, false otherwise.
  */
-export function isJsonResponse(response: HttpResponse): response is JsonHttpResponse {
+export function isJsonResponse(
+	response: HttpResponse
+): response is JsonHttpResponse {
 	return isJsonMediaType(response.mediaType);
 }
 
 /**
- * Checks if a {@link HttpResponse} is an instance of {@link PlainTextHttpResponse}, providing a 
+ * Checks if a {@link HttpResponse} is an instance of {@link PlainTextHttpResponse}, providing a
  * type guard for that type.
- * 
+ *
  * @param response - the response instance being checked
  * @returns boolean true if the response is an instance of {@link PlainTextHttpResponse}, false otherwise.
  */
-export function isPlainTextResponse(response: HttpResponse): response is PlainTextHttpResponse {
+export function isPlainTextResponse(
+	response: HttpResponse
+): response is PlainTextHttpResponse {
 	return isPlainTextMediaType(response.mediaType);
 }
 
 /**
- * Checks if a {@link HttpResponse} is an instance of {@link ImageHttpResponse}, providing a 
+ * Checks if a {@link HttpResponse} is an instance of {@link ImageHttpResponse}, providing a
  * type guard for that type.
- * 
+ *
  * @param response - the response instance being checked
  * @returns boolean true if the response is an instance of {@link ImageHttpResponse}, false otherwise.
  */
-export function isImageResponse(response: HttpResponse): response is ImageHttpResponse {
+export function isImageResponse(
+	response: HttpResponse
+): response is ImageHttpResponse {
 	return isImageMediaType(response.mediaType);
 }
 

@@ -1,5 +1,16 @@
 import { expect, describe, test } from '@jest/globals';
-import { HttpResponse, isBinaryResponse, isClientErrorResponse, isImageResponse, isInformationResponse, isJsonResponse, isPlainTextResponse, isRedirectionResponse, isServerErrorResponse, isSuccessfulResponse } from './response';
+import {
+	HttpResponse,
+	isBinaryResponse,
+	isClientErrorResponse,
+	isImageResponse,
+	isInformationResponse,
+	isJsonResponse,
+	isPlainTextResponse,
+	isRedirectionResponse,
+	isServerErrorResponse,
+	isSuccessfulResponse
+} from './response';
 import { MediaType } from './media_type';
 
 describe('response', function () {
@@ -61,7 +72,9 @@ describe('response', function () {
 				test('returns true if argument is instance of RedirectionHttpResponse', function () {
 					const fetchResponse = <Response>{
 						status: 300,
-						headers: new Headers({ 'location': 'https://github.com/web-pacotes/networking.ts/' })
+						headers: new Headers({
+							location: 'https://github.com/web-pacotes/networking.ts/'
+						})
 					};
 
 					const httpResponse = HttpResponse.fromFetchResponse(fetchResponse);
@@ -163,7 +176,9 @@ describe('response', function () {
 
 			describe('isImageResponse', function () {
 				test('returns true if argument media type starts with "image"', function () {
-					const mediaTypes = Object.values(MediaType).filter((mt) => mt.startsWith('image/'));
+					const mediaTypes = Object.values(MediaType).filter((mt) =>
+						mt.startsWith('image/')
+					);
 
 					for (const value of mediaTypes) {
 						const fetchResponse = <Response>{
@@ -179,7 +194,9 @@ describe('response', function () {
 				});
 
 				test('returns false if argument media type does not start with "image"', function () {
-					const mediaTypes = Object.values(MediaType).filter((mt) => !mt.startsWith('image/'));
+					const mediaTypes = Object.values(MediaType).filter(
+						(mt) => !mt.startsWith('image/')
+					);
 
 					for (const value of mediaTypes) {
 						const fetchResponse = <Response>{
@@ -197,7 +214,9 @@ describe('response', function () {
 
 			describe('isJsonResponse', function () {
 				test('returns true if argument media type ends with "json"', function () {
-					const mediaTypes = Object.values(MediaType).filter((mt) => mt.endsWith('json'));
+					const mediaTypes = Object.values(MediaType).filter((mt) =>
+						mt.endsWith('json')
+					);
 
 					for (const value of mediaTypes) {
 						const fetchResponse = <Response>{
@@ -213,7 +232,9 @@ describe('response', function () {
 				});
 
 				test('returns false if argument media type does not end with "json"', function () {
-					const mediaTypes = Object.values(MediaType).filter((mt) => !mt.endsWith('json'));
+					const mediaTypes = Object.values(MediaType).filter(
+						(mt) => !mt.endsWith('json')
+					);
 
 					for (const value of mediaTypes) {
 						const fetchResponse = <Response>{
@@ -231,7 +252,13 @@ describe('response', function () {
 
 			describe('isPlainTextResponse', function () {
 				test('returns true if argument media type is either plain text, javascript, xml or html variant', function () {
-					const mediaTypes = [MediaType.plainText, MediaType.js, MediaType.xml, MediaType.html, MediaType.xhtml];
+					const mediaTypes = [
+						MediaType.plainText,
+						MediaType.js,
+						MediaType.xml,
+						MediaType.html,
+						MediaType.xhtml
+					];
 
 					for (const value of mediaTypes) {
 						const fetchResponse = <Response>{
@@ -247,8 +274,16 @@ describe('response', function () {
 				});
 
 				test('returns false if argument media type is not either plain text, javascript, xml or html variant', function () {
-					const plainTextMediaTypes = [MediaType.plainText, MediaType.js, MediaType.xml, MediaType.html, MediaType.xhtml];
-					const mediaTypes = Object.values(MediaType).filter((mt) => !plainTextMediaTypes.includes(mt));
+					const plainTextMediaTypes = [
+						MediaType.plainText,
+						MediaType.js,
+						MediaType.xml,
+						MediaType.html,
+						MediaType.xhtml
+					];
+					const mediaTypes = Object.values(MediaType).filter(
+						(mt) => !plainTextMediaTypes.includes(mt)
+					);
 
 					for (const value of mediaTypes) {
 						const fetchResponse = <Response>{
@@ -267,10 +302,14 @@ describe('response', function () {
 
 		describe('ok', function () {
 			test('returns true response is either of type informational, successful or redirection', function () {
-				const responses = [100, 200, 300].map((sc) => HttpResponse.fromFetchResponse(<Response>{
-					status: sc,
-					headers: new Headers({ location: 'https://github.com/web-pacotes/networking.ts/' })
-				}));
+				const responses = [100, 200, 300].map((sc) =>
+					HttpResponse.fromFetchResponse(<Response>{
+						status: sc,
+						headers: new Headers({
+							location: 'https://github.com/web-pacotes/networking.ts/'
+						})
+					})
+				);
 
 				for (const value of responses) {
 					const predicate = value.ok();
@@ -280,10 +319,14 @@ describe('response', function () {
 			});
 
 			test('returns false response is not either of type informational, successful or redirection', function () {
-				const responses = [400, 500].map((sc) => HttpResponse.fromFetchResponse(<Response>{
-					status: sc,
-					headers: new Headers({ location: 'https://github.com/web-pacotes/networking.ts/' })
-				}));
+				const responses = [400, 500].map((sc) =>
+					HttpResponse.fromFetchResponse(<Response>{
+						status: sc,
+						headers: new Headers({
+							location: 'https://github.com/web-pacotes/networking.ts/'
+						})
+					})
+				);
 
 				for (const value of responses) {
 					const predicate = value.ok();
@@ -295,10 +338,12 @@ describe('response', function () {
 
 		describe('not ok', function () {
 			test('returns true response is either of type client error, or server error', function () {
-				const responses = [400, 500].map((sc) => HttpResponse.fromFetchResponse(<Response>{
-					status: sc,
-					headers: new Headers()
-				}));
+				const responses = [400, 500].map((sc) =>
+					HttpResponse.fromFetchResponse(<Response>{
+						status: sc,
+						headers: new Headers()
+					})
+				);
 
 				for (const value of responses) {
 					const predicate = value.notOk();
@@ -308,10 +353,14 @@ describe('response', function () {
 			});
 
 			test('returns false response is not either of type client error, or server error', function () {
-				const responses = [100, 200, 300].map((sc) => HttpResponse.fromFetchResponse(<Response>{
-					status: sc,
-					headers: new Headers({ location: 'https://github.com/web-pacotes/networking.ts/' })
-				}));
+				const responses = [100, 200, 300].map((sc) =>
+					HttpResponse.fromFetchResponse(<Response>{
+						status: sc,
+						headers: new Headers({
+							location: 'https://github.com/web-pacotes/networking.ts/'
+						})
+					})
+				);
 
 				for (const value of responses) {
 					const predicate = value.notOk();
@@ -323,10 +372,14 @@ describe('response', function () {
 
 		describe('redirection', function () {
 			test('returns true response is of type redirection', function () {
-				const responses = [300].map((sc) => HttpResponse.fromFetchResponse(<Response>{
-					status: sc,
-					headers: new Headers({ location: 'https://github.com/web-pacotes/networking.ts/' })
-				}));
+				const responses = [300].map((sc) =>
+					HttpResponse.fromFetchResponse(<Response>{
+						status: sc,
+						headers: new Headers({
+							location: 'https://github.com/web-pacotes/networking.ts/'
+						})
+					})
+				);
 
 				for (const value of responses) {
 					const predicate = value.redirection();
@@ -336,10 +389,12 @@ describe('response', function () {
 			});
 
 			test('returns false response is not of type redirection', function () {
-				const responses = [100, 200, 400, 500].map((sc) => HttpResponse.fromFetchResponse(<Response>{
-					status: sc,
-					headers: new Headers()
-				}));
+				const responses = [100, 200, 400, 500].map((sc) =>
+					HttpResponse.fromFetchResponse(<Response>{
+						status: sc,
+						headers: new Headers()
+					})
+				);
 
 				for (const value of responses) {
 					const predicate = value.redirection();
