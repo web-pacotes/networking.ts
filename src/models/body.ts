@@ -1,10 +1,10 @@
 import { Lazy } from '../type-utils';
 
-type Text = string;
-type Binary = Blob;
-type JSON = NonNullable<object>;
-type JSONArray = Array<NonNullable<JSON | number | string | boolean>>;
-type Anything<T = object | Binary | JSON | JSONArray | Text | null> = T;
+export type Text = string;
+export type Binary = Blob;
+export type JSON = NonNullable<object>;
+export type JSONArray = Array<NonNullable<JSON | number | string | boolean>>;
+export type Anything<T = object | Binary | JSON | JSONArray | Text | null> = T;
 type FetchBody = XMLHttpRequestBodyInit | null;
 
 /**
