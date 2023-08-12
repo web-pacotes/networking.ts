@@ -215,9 +215,11 @@ export class NetworkingClient {
 	}
 
 	async send({
-		request
+		request,
+		eager
 	}: {
 		request: HttpRequest;
+		eager?: boolean;
 	}): Promise<Either<HttpRequestError, HttpResponse>> {
 		let result: Either<HttpRequestError, HttpResponse>;
 
@@ -232,7 +234,13 @@ export class NetworkingClient {
 				signal: AbortSignal.timeout(this.timeoutMS)
 			});
 
-			result = right(HttpResponse.fromFetchResponse(fetchResponse));
+			if (eager ?? true) {
+				result = right(
+					await HttpResponse.fromEagerFetchResponse(fetchResponse)
+				);
+			} else {
+				result = right(HttpResponse.fromFetchResponse(fetchResponse));
+			}
 		} catch (err) {
 			if (err === undefined) {
 				result = left(new NoInternetConnectionError());

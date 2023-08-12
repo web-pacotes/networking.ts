@@ -1,5 +1,14 @@
 import { Range } from '../type-utils';
-import { Binary, HttpBody, JSON, JSONArray, extract, of } from './body';
+import {
+	Anything,
+	Binary,
+	HttpBody,
+	JSON,
+	JSONArray,
+	empty,
+	extract,
+	of
+} from './body';
 import { HttpError } from './errors';
 import { HttpHeaders } from './headers';
 import { MediaType, tryParseContentType } from './media_type';
@@ -17,27 +26,27 @@ type HttpResponsePositionalProperties = Pick<
 type InformationalHttpResponsePositionalProperties = Omit<
 	HttpResponsePositionalProperties,
 	'stringify' | 'body'
-> & { statusCode: Range<100, 200> };
+>;
 
 type SuccessfulHttpResponsePositionalProperties = Omit<
 	HttpResponsePositionalProperties,
 	'stringify'
-> & { statusCode: Range<200, 300>; stringify?: boolean };
+> & { stringify?: boolean };
 
 type RedirectionHttpResponsePositionalProperties = Omit<
 	HttpResponsePositionalProperties,
 	'stringify' | 'body'
-> & { statusCode: Range<300, 400>; location: URL };
+> & { location: URL };
 
 type ClientErrorHttpResponsePositionalProperties = Omit<
 	HttpResponsePositionalProperties,
 	'stringify'
-> & { statusCode: Range<400, 500>; stringify?: boolean };
+> & { stringify?: boolean };
 
 type ServerErrorHttpResponsePositionalProperties = Omit<
 	HttpResponsePositionalProperties,
 	'stringify'
-> & { statusCode: Range<500, 600>; stringify?: boolean };
+> & { stringify?: boolean };
 
 type BinaryHttpResponse = Omit<HttpResponse, 'body'> & {
 	body: HttpBody<Binary>;
@@ -71,44 +80,29 @@ export abstract class HttpResponse {
 	 * @param response - a response that follows the Fetch API response schema.
 	 * @returns a {@link HttpResponse} instance that translates the fetch response.
 	 */
-	static fromFetchResponse(response: Response): HttpResponse {
+	static fromFetchResponse(response: Response) {
 		const { statusCode, mediaType, headers } = extractEssential(response);
+		const body = extractBody(response, mediaType, statusCode);
 
-		if (statusCode > 499) {
-			return new ServerErrorHttpResponse({
-				headers: headers,
-				mediaType: mediaType,
-				statusCode: statusCode as Range<500, 600>,
-				body: extractBody(response, mediaType)
-			});
-		} else if (statusCode > 399) {
-			return new ClientErrorHttpResponse({
-				headers: headers,
-				mediaType: mediaType,
-				statusCode: statusCode as Range<400, 500>,
-				body: extractBody(response, mediaType)
-			});
-		} else if (statusCode > 299) {
-			return new RedirectionHttpResponse({
-				headers: headers,
-				mediaType: mediaType,
-				statusCode: statusCode as Range<300, 400>,
-				location: new URL(headers['location'])
-			});
-		} else if (statusCode > 199) {
-			return new SuccessfulHttpResponse({
-				headers: headers,
-				mediaType: mediaType,
-				statusCode: statusCode as Range<200, 300>,
-				body: extractBody(response, mediaType)
-			});
-		} else {
-			return new InformationalHttpResponse({
-				headers: headers,
-				mediaType: mediaType,
-				statusCode: statusCode as Range<100, 200>
-			});
+		return buildHttpResponse(statusCode, mediaType, headers, body);
+	}
+
+	/**
+	 * Converts a fetch {@link Response} in a {@link HttpResponse}.
+	 * The same as {@link fromFetchResponse} but eager loads the response body.
+	 *
+	 * @param response - a response that follows the Fetch API response schema.
+	 * @returns a {@link HttpResponse} instance that translates the fetch response.
+	 */
+	static async fromEagerFetchResponse(response: Response) {
+		const { statusCode, mediaType, headers } = extractEssential(response);
+		let body = extractBody(response, mediaType, statusCode);
+
+		if (body) {
+			body = await extract(body);
 		}
+
+		return buildHttpResponse(statusCode, mediaType, headers, body);
 	}
 
 	constructor({
@@ -152,6 +146,17 @@ export abstract class HttpResponse {
 		return isRedirectionResponse(this);
 	}
 
+	/**
+	 * Casts the response body as of type {@link HttpBody<T>}. Useful to extract the body to a specific type.
+	 *
+	 * **Unsafe** method!
+	 *
+	 * @returns a typed version of HttpBody
+	 */
+	typedBody<T extends Anything>(): HttpBody<T> {
+		return this.body as HttpBody<T>;
+	}
+
 	toString(): string {
 		return `${this.constructor.name}(Status Code: ${
 			this.statusCode
@@ -171,7 +176,7 @@ export class InformationalHttpResponse extends HttpResponse {
 		statusCode
 	}: InformationalHttpResponsePositionalProperties) {
 		super({
-			body: <HttpBody>{},
+			body: empty(),
 			headers: headers,
 			mediaType: mediaType,
 			statusCode: statusCode,
@@ -214,7 +219,7 @@ export class RedirectionHttpResponse extends HttpResponse {
 		location
 	}: RedirectionHttpResponsePositionalProperties) {
 		super({
-			body: <HttpBody>{},
+			body: empty(),
 			headers: headers,
 			mediaType: mediaType,
 			statusCode: statusCode,
@@ -431,6 +436,49 @@ function isImageMediaType(mediaType: MediaType): boolean {
 	return mediaType.startsWith('image/');
 }
 
+function buildHttpResponse(
+	statusCode: number,
+	mediaType: MediaType,
+	headers: HttpHeaders,
+	body: HttpBody
+) {
+	if (statusCode > 499) {
+		return new ServerErrorHttpResponse({
+			headers: headers,
+			mediaType: mediaType,
+			statusCode: statusCode as Range<500, 600>,
+			body: body
+		});
+	} else if (statusCode > 399) {
+		return new ClientErrorHttpResponse({
+			headers: headers,
+			mediaType: mediaType,
+			statusCode: statusCode as Range<400, 500>,
+			body: body
+		});
+	} else if (statusCode > 299) {
+		return new RedirectionHttpResponse({
+			headers: headers,
+			mediaType: mediaType,
+			statusCode: statusCode as Range<300, 400>,
+			location: new URL(headers['location'])
+		});
+	} else if (statusCode > 199) {
+		return new SuccessfulHttpResponse({
+			headers: headers,
+			mediaType: mediaType,
+			statusCode: statusCode as Range<200, 300>,
+			body: body
+		});
+	} else {
+		return new InformationalHttpResponse({
+			headers: headers,
+			mediaType: mediaType,
+			statusCode: statusCode as Range<100, 200>
+		});
+	}
+}
+
 function extractEssential(response: Response) {
 	const headers = Object.fromEntries(response.headers);
 
@@ -441,7 +489,15 @@ function extractEssential(response: Response) {
 	};
 }
 
-function extractBody(response: Response, mediaType: MediaType) {
+function extractBody(
+	response: Response,
+	mediaType: MediaType,
+	statusCode: number
+) {
+	if (statusCode < 200 || (statusCode > 299 && statusCode < 400)) {
+		return empty();
+	}
+
 	if (isJsonMediaType(mediaType)) {
 		return of(() => response.json());
 	} else if (isBinaryMediaType(mediaType)) {
