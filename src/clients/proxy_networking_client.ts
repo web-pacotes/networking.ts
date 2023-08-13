@@ -77,7 +77,6 @@ export class ProxyConfiguration {
 	 * A request interceptor like callback that is used to compute the proxied request before sending it to the proxy API/server
 	 */
 	onSend: OnProxyNetworkingClientSendCallback;
-
 	constructor({ url, client, onSend }: ProxyConfigurationPositionalProperties) {
 		this.url = url;
 		this.client = client;
