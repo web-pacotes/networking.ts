@@ -73,9 +73,9 @@
 			}
 
 			const response = result.value;
-			const body = extract(result.body)
+			const body = extract(response.body)
 
-			if (result.value instanceof ImageHttpResponse) {
+			if (isImageResponse(response)) {
 				const reader = new FileReader();
 				reader.readAsDataURL(body);
 
