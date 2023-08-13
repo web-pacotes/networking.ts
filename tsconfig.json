@@ -22,7 +22,8 @@
 	"include": ["src/**/*"],
 	"typedocOptions": {
 		"entryPoints": ["src/index.ts"],
-		"out": "docs"
+		"out": "docs",
+		"excludeNotDocumented": true
 	},
 	"exclude": ["node_modules", "dist/**/*", "coverage/**/*"]
 }

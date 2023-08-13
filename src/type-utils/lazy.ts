@@ -19,7 +19,7 @@ export class Lazy<T> {
 	}
 
 	/**
-	 * Gets the lazy computed value. If it's not available yet, computes it by calling the {@link LazyValueCallback}.
+	 * Gets the lazy computed value. If it's not available yet, computes it by calling the callback.
 	 *
 	 * @returns the lazy loaded value
 	 */
