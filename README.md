@@ -111,6 +111,7 @@ export class ImgurNetworkingClient extends NetworkingClient {
 - post form data
 - websocket support
 - response streaming
+- requests redirection follow-up
 
 ---
 
