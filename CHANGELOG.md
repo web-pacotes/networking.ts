@@ -1,5 +1,11 @@
 # @web-pacotes/networking
 
+## 0.0.5
+
+### Patch Changes
+
+- d715d73: bugfix: web example demo merge conflitcts
+
 ## 0.0.4
 
 ### Patch Changes
