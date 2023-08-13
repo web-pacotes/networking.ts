@@ -2,7 +2,11 @@
 module.exports = {
 	content: ['index.html'],
 	theme: {
-		extend: {}
+		extend: {},
 	},
-	plugins: [require('rippleui')]
+	darkMode: 'class',
+	plugins: [require('rippleui')],
+	rippleui: {
+		removeThemes: ['dark']
+	},
 };
