@@ -1,6 +1,6 @@
 {
 	"name": "@web-pacotes/networking",
-	"version": "0.0.6",
+	"version": "0.0.7",
 	"description": "Yet another fetch based HTTP library :)",
 	"main": "dist/index.js",
 	"module": "dist/index.mjs",

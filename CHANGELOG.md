@@ -1,5 +1,11 @@
 # @web-pacotes/networking
 
+## 0.0.7
+
+### Patch Changes
+
+- 8e25d31: fix: bundle .mjs
+
 ## 0.0.6
 
 ### Patch Changes
