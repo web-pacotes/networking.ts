@@ -14,7 +14,7 @@ import {
 	UrlQueryParameters,
 	resolveUrl
 } from '../models';
-import { FetchClient } from '../models/fetch';
+import { FetchClient } from '../models';
 import { Either, fold, left, right } from '../type-utils';
 
 /**

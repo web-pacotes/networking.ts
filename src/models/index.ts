@@ -2,6 +2,7 @@ export * from './body';
 export * from './cache';
 export * from './cors';
 export * from './errors';
+export * from './fetch';
 export * from './headers';
 export * from './media_type';
 export * from './params';
