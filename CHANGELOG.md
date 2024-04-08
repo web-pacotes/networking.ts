@@ -1,5 +1,11 @@
 # @web-pacotes/networking
 
+## 0.0.6
+
+### Patch Changes
+
+- 7796558: fix: export FetchClient type
+
 ## 0.0.5
 
 ### Patch Changes
