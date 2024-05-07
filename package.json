@@ -21,6 +21,12 @@
 		"release": "changeset",
 		"publish": "npm run build && changeset publish"
 	},
+	"files": [
+		"dist",
+		"!dist/**/*.test.*",
+		"!dist/**/*.spec.*",
+		"!dist/**/spec/**"
+	],
 	"repository": {
 		"type": "git",
 		"url": "git+https://github.com/web-pacotes/networking.ts.git"
