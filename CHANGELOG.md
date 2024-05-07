@@ -1,5 +1,11 @@
 # @web-pacotes/networking
 
+## 0.0.8
+
+### Patch Changes
+
+- 8fa5b1b: chore: set package type as module and replace swc with esbuild
+
 ## 0.0.7
 
 ### Patch Changes
