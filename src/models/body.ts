@@ -1,4 +1,4 @@
-import { Lazy, compute, computed } from "@web-pacotes/foundation-types";
+import { Lazy, compute, computed } from '@web-pacotes/foundation-types';
 
 export type Text = string;
 export type Binary = Blob;

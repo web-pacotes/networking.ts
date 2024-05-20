@@ -11,7 +11,7 @@ import {
 } from './body';
 import { HttpError } from './errors';
 import { HttpHeaders } from './headers';
-import { MediaType, tryParseContentType } from './media_type';
+import type { MediaType } from './media_type';
 
 /**
  * Alias for {@link HttpResponse} class properties in a positional style.
@@ -397,44 +397,43 @@ export function isImageResponse(
 	return isImageMediaType(response.mediaType);
 }
 
-function isBinaryMediaType(mediaType: MediaType): boolean {
+const isBinaryMediaType = (mediaType: MediaType) => {
 	switch (mediaType) {
-		case MediaType.binary:
-		case MediaType.zip:
-		case MediaType.gzip:
-		case MediaType.pdf:
+		case 'application/octet-stream':
+		case 'application/zip':
+		case 'application/gzip':
+		case 'application/pdf':
 			return true;
 		default:
 			return isImageMediaType(mediaType);
 	}
-}
+};
 
-function isJsonMediaType(mediaType: MediaType): boolean {
+const isJsonMediaType = (mediaType: MediaType) => {
 	switch (mediaType) {
-		case MediaType.json:
-		case MediaType.jsonld:
+		case 'application/json':
+		case 'application/ld+json':
 			return true;
 		default:
 			return false;
 	}
-}
+};
 
-function isPlainTextMediaType(mediaType: MediaType): boolean {
+const isPlainTextMediaType = (mediaType: MediaType) => {
 	switch (mediaType) {
-		case MediaType.html:
-		case MediaType.js:
-		case MediaType.plainText:
-		case MediaType.xhtml:
-		case MediaType.xml:
+		case 'text/html':
+		case 'text/javascript':
+		case 'text/plain':
+		case 'application/xhtml+xml':
+		case 'application/xml':
 			return true;
 		default:
 			return false;
 	}
-}
+};
 
-function isImageMediaType(mediaType: MediaType): boolean {
-	return mediaType.startsWith('image/');
-}
+const isImageMediaType = (mediaType: MediaType) =>
+	mediaType.startsWith('image/');
 
 function buildHttpResponse(
 	statusCode: number,
@@ -485,7 +484,8 @@ function extractEssential(response: Response) {
 	return {
 		statusCode: response.status,
 		headers: headers as HttpHeaders,
-		mediaType: tryParseContentType(headers['content-type'])
+		mediaType: (headers['content-type'] ??
+			'application/octet-stream') as MediaType
 	};
 }
 

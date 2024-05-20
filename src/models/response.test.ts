@@ -176,9 +176,17 @@ describe('response', function () {
 
 			describe('isImageResponse', function () {
 				test('returns true if argument media type starts with "image"', function () {
-					const mediaTypes = Object.values(MediaType).filter((mt) =>
-						mt.startsWith('image/')
-					);
+					const mediaTypes = [
+						'image/avif',
+						'image/bmp',
+						'image/gif',
+						'image/jpeg',
+						'image/png',
+						'image/svg+xml',
+						'image/tiff',
+						'image/vnd.microsoft.icon',
+						'image/webp'
+					] satisfies MediaType[];
 
 					for (const value of mediaTypes) {
 						const fetchResponse = <Response>{
@@ -194,9 +202,10 @@ describe('response', function () {
 				});
 
 				test('returns false if argument media type does not start with "image"', function () {
-					const mediaTypes = Object.values(MediaType).filter(
-						(mt) => !mt.startsWith('image/')
-					);
+					const mediaTypes = [
+						'application/gzip',
+						'text/html'
+					] satisfies MediaType[];
 
 					for (const value of mediaTypes) {
 						const fetchResponse = <Response>{
@@ -214,9 +223,10 @@ describe('response', function () {
 
 			describe('isJsonResponse', function () {
 				test('returns true if argument media type ends with "json"', function () {
-					const mediaTypes = Object.values(MediaType).filter((mt) =>
-						mt.endsWith('json')
-					);
+					const mediaTypes = [
+						'application/json',
+						'application/ld+json'
+					] satisfies MediaType[];
 
 					for (const value of mediaTypes) {
 						const fetchResponse = <Response>{
@@ -232,9 +242,7 @@ describe('response', function () {
 				});
 
 				test('returns false if argument media type does not end with "json"', function () {
-					const mediaTypes = Object.values(MediaType).filter(
-						(mt) => !mt.endsWith('json')
-					);
+					const mediaTypes = ['text/javascript'] satisfies MediaType[];
 
 					for (const value of mediaTypes) {
 						const fetchResponse = <Response>{
@@ -253,12 +261,12 @@ describe('response', function () {
 			describe('isPlainTextResponse', function () {
 				test('returns true if argument media type is either plain text, javascript, xml or html variant', function () {
 					const mediaTypes = [
-						MediaType.plainText,
-						MediaType.js,
-						MediaType.xml,
-						MediaType.html,
-						MediaType.xhtml
-					];
+						'text/plain',
+						'text/javascript',
+						'application/xml',
+						'text/html',
+						'application/xhtml+xml'
+					] satisfies MediaType[];
 
 					for (const value of mediaTypes) {
 						const fetchResponse = <Response>{
@@ -274,16 +282,10 @@ describe('response', function () {
 				});
 
 				test('returns false if argument media type is not either plain text, javascript, xml or html variant', function () {
-					const plainTextMediaTypes = [
-						MediaType.plainText,
-						MediaType.js,
-						MediaType.xml,
-						MediaType.html,
-						MediaType.xhtml
-					];
-					const mediaTypes = Object.values(MediaType).filter(
-						(mt) => !plainTextMediaTypes.includes(mt)
-					);
+					const mediaTypes = [
+						'image/avif',
+						'application/pdf'
+					] satisfies MediaType[];
 
 					for (const value of mediaTypes) {
 						const fetchResponse = <Response>{
