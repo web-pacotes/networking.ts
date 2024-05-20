@@ -1,5 +1,11 @@
 # @web-pacotes/networking
 
+## 0.0.9
+
+### Patch Changes
+
+- c8691fb: refactor: replace internal monads with those provided in @web-pacotes/foundation-types
+
 ## 0.0.8
 
 ### Patch Changes
