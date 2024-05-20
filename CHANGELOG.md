@@ -1,5 +1,11 @@
 # @web-pacotes/networking
 
+## 0.0.10
+
+### Patch Changes
+
+- cb45411: refactor: replace MediaType enum with union type
+
 ## 0.0.9
 
 ### Patch Changes
