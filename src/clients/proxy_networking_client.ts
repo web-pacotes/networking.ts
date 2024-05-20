@@ -1,5 +1,5 @@
 import { HttpRequest, HttpRequestError, HttpResponse } from '../models';
-import { Either } from '../type-utils';
+import type { Either } from '@web-pacotes/foundation-types';
 import {
 	NetworkingClient,
 	NetworkingClientPositionalParameters
