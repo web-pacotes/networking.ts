@@ -127,7 +127,7 @@ export class NetworkingClient {
 			request: new HttpRequest({
 				url: url,
 				verb: 'post',
-				mediaType: mediaType ?? MediaType.json,
+				mediaType: mediaType ?? 'application/json',
 				body: body,
 				query: query,
 				headers: headers,
@@ -154,7 +154,7 @@ export class NetworkingClient {
 			request: new HttpRequest({
 				url: url,
 				verb: 'put',
-				mediaType: mediaType ?? MediaType.json,
+				mediaType: mediaType ?? 'application/json',
 				body: body,
 				query: query,
 				headers: headers,
@@ -181,7 +181,7 @@ export class NetworkingClient {
 			request: new HttpRequest({
 				url: url,
 				verb: 'patch',
-				mediaType: mediaType ?? MediaType.json,
+				mediaType: mediaType ?? 'application/json',
 				body: body,
 				query: query,
 				headers: headers,

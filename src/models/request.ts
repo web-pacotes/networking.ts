@@ -51,7 +51,7 @@ export class HttpRequest {
 		this.verb = verb;
 		this.headers = headers ?? <HttpHeaders>{};
 		this.query = query ?? <UrlQueryParameters>{};
-		this.mediaType = mediaType ?? MediaType.binary;
+		this.mediaType = mediaType ?? 'application/octet-stream';
 		this.cache = cache ?? 'default';
 		this.cors = cors ?? 'no-cors';
 		this.body = body ?? empty();
