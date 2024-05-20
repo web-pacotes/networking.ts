@@ -1,4 +1,4 @@
-import { Lazy } from '../type-utils';
+import { Lazy, compute, computed } from "@web-pacotes/foundation-types";
 
 export type Text = string;
 export type Binary = Blob;
@@ -28,7 +28,7 @@ export function empty(): HttpBody<null> {
  * @returns a lazy {@link HttpBody} that does not resolve until computed.
  */
 export function of<T = Anything>(value: () => T): HttpBody<T> {
-	return Lazy.sync(value);
+	return Lazy(value);
 }
 
 /**
@@ -38,8 +38,8 @@ export function of<T = Anything>(value: () => T): HttpBody<T> {
  * @returns a value of {@link T} type, extracted from the {@link HttpBody} type.
  */
 export function extract<T = Anything>(body: HttpBody<T>): T {
-	if (isLazyBody(body)) {
-		return body.get();
+	if (!computed(body)) {
+		return compute(body);
 	}
 
 	return body;
@@ -61,10 +61,6 @@ export function convert<T = Anything>(body: HttpBody<T>): FetchBody {
 	} else {
 		return JSON.stringify(data);
 	}
-}
-
-function isLazyBody<T = Anything>(body: HttpBody<T>): body is LazyHttpBody<T> {
-	return body instanceof Lazy;
 }
 
 function isBinary(data: Anything): data is Blob {

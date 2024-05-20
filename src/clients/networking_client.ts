@@ -15,7 +15,7 @@ import {
 	resolveUrl
 } from '../models';
 import { FetchClient } from '../models';
-import { Either, fold, left, right } from '../type-utils';
+import { Either, fold, Left, Right } from '@web-pacotes/foundation-types';
 
 /**
  * An alias for {@link NetworkingClient} positional parameters.
@@ -235,26 +235,26 @@ export class NetworkingClient {
 			});
 
 			if (eager ?? true) {
-				result = right(
+				result = Right(
 					await HttpResponse.fromEagerFetchResponse(fetchResponse)
 				);
 			} else {
-				result = right(HttpResponse.fromFetchResponse(fetchResponse));
+				result = Right(HttpResponse.fromFetchResponse(fetchResponse));
 			}
 		} catch (err) {
 			if (err === undefined) {
-				result = left(new NoInternetConnectionError());
+				result = Left(new NoInternetConnectionError());
 			} else if (!(err instanceof Error)) {
-				result = left(new UnknownError({ cause: `${err}` }));
+				result = Left(new UnknownError({ cause: `${err}` }));
 			} else if (err.name === 'TimeoutError') {
-				result = left(
+				result = Left(
 					new TimeoutError({
 						cause: err.message,
 						timeoutMS: this.timeoutMS
 					})
 				);
 			} else {
-				result = left(new UnknownError({ cause: JSON.stringify(err) }));
+				result = Left(new UnknownError({ cause: JSON.stringify(err) }));
 			}
 		}
 
