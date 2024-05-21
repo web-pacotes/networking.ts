@@ -484,7 +484,7 @@ function extractEssential(response: Response) {
 	return {
 		statusCode: response.status,
 		headers: headers as HttpHeaders,
-		mediaType: (headers['content-type'] ??
+		mediaType: (extractMediaType(headers) ??
 			'application/octet-stream') as MediaType
 	};
 }
@@ -506,3 +506,6 @@ function extractBody(
 		return of(() => response.text());
 	}
 }
+
+const extractMediaType = (headers: HttpHeaders) =>
+	headers['content-type']?.split(';')?.at(0);
