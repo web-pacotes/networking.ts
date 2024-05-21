@@ -256,6 +256,25 @@ describe('response', function () {
 						expect(predicate).toBeFalsy();
 					}
 				});
+
+				test('returns true if argument content type ends with "json" and contains suffixes', function () {
+					const mediaTypes = [
+						'application/json',
+						'application/ld+json'
+					] satisfies MediaType[];
+
+					for (const value of mediaTypes) {
+						const fetchResponse = <Response>{
+							status: 200,
+							headers: new Headers({ 'content-type': `${value}; charset=UTF-8` })
+						};
+
+						const httpResponse = HttpResponse.fromFetchResponse(fetchResponse);
+						const predicate = isJsonResponse(httpResponse);
+
+						expect(predicate).toBeTruthy();
+					}
+				});
 			});
 
 			describe('isPlainTextResponse', function () {
