@@ -1,5 +1,11 @@
 # @web-pacotes/networking
 
+## 0.0.11
+
+### Patch Changes
+
+- 3e2ee2e: fix: remove any suffixes when resolving media type value in extractBody
+
 ## 0.0.10
 
 ### Patch Changes
