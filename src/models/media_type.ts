@@ -23,4 +23,5 @@ export type MediaType =
 	| 'application/xhtml+xml'
 	| 'application/xml'
 	| 'application/zip'
-	| 'application/x-www-form-urlencoded';
+	| 'application/x-www-form-urlencoded'
+	| (string & NonNullable<unknown>);
