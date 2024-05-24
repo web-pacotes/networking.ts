@@ -1,5 +1,11 @@
 # @web-pacotes/networking
 
+## 0.0.12
+
+### Patch Changes
+
+- 5c63e91: feat: allow library clients to specify media types other than those defined in the union type
+
 ## 0.0.11
 
 ### Patch Changes
